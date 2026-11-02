@@ -167,6 +167,10 @@ MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**
 1. Download **[MacMelody.dmg](https://github.com/Omraj09/MacMelody/releases/latest/download/MacMelody.dmg)**.
 2. Drag **MacMelody** into your **Applications** folder.
 3. Open the app and allow Bluetooth access when prompted.
+   > 💡 **First-time Open (macOS Gatekeeper):** If macOS shows *"cannot verify that this app is free of malware"*, simply **Right-Click** (or Control-Click) `MacMelody.app` and choose **Open**, or go to **System Settings → Privacy & Security** and click **Open Anyway**. You can also run:
+   > ```bash
+   > xattr -cr /Applications/MacMelody.app
+   > ```
 4. Connect your earbuds to your Mac via Bluetooth—MacMelody pairs automatically.
 
 <details>
