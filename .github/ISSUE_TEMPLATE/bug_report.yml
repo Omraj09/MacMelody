@@ -1,0 +1,48 @@
+name: 🐛 Bug Report
+description: Create a report to help us fix an issue or unexpected behavior in MacMelody.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an issue! Please describe the problem in detail.
+  - type: input
+    id: macos_version
+    attributes:
+      label: macOS Version & Mac Model
+      placeholder: "e.g. macOS 15.1 Sequoia on Apple Silicon M2"
+    validations:
+      required: true
+  - type: input
+    id: earbuds_model
+    attributes:
+      label: Earbud Model
+      placeholder: "e.g. OnePlus Buds 3 / Realme Buds Air 6 Pro"
+    validations:
+      required: true
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: Describe the bug
+      placeholder: "A clear and concise description of what the bug is."
+    validations:
+      required: true
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Connect earbuds
+        2. Open MacMelody menu bar panel
+        3. Click 'ANC'
+        4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      placeholder: "What you expected to happen."
+    validations:
+      required: true

@@ -14,14 +14,20 @@ No phone apps, no accounts, no cloud—just direct Bluetooth.
 [![macOS 14+](https://img.shields.io/badge/macOS-14.0%2B-black?style=flat-square&logo=apple&logoColor=white)](https://apple.com/macos)
 [![Swift 6](https://img.shields.io/badge/Swift-6.0-FA7343?style=flat-square&logo=swift&logoColor=white)](https://swift.org)
 [![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-Native-555555?style=flat-square)](https://apple.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-007AFF?style=flat-square)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/Omraj09/MacMelody?color=34C759&style=flat-square)](https://github.com/Omraj09/MacMelody/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Omraj09/MacMelody/total?style=flat-square&color=blueviolet)](https://github.com/Omraj09/MacMelody/releases)
+[![Stars](https://img.shields.io/github/stars/Omraj09/MacMelody?style=flat-square&color=yellow)](https://github.com/Omraj09/MacMelody/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-007AFF?style=flat-square)](LICENSE)
 
 <br/>
 
 <a href="https://github.com/Omraj09/MacMelody/releases/latest/download/MacMelody.dmg">
-  <img src="https://img.shields.io/badge/Download-MacMelody.dmg-007AFF?style=for-the-badge&logo=apple&logoColor=white" height="40">
+  <img src="https://img.shields.io/badge/Download-MacMelody.dmg-007AFF?style=for-the-badge&logo=apple&logoColor=white" height="42">
 </a>
+
+<br/><br/>
+
+> ⭐️ **Enjoying MacMelody?** Star the repository to support development and help fellow Mac users discover it!
 
 </div>
 

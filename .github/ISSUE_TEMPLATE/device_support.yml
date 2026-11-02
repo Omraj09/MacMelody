@@ -1,0 +1,47 @@
+name: 🎧 Device Support / Verification
+description: Request support for a new earbud model or report findings on an unverified device.
+title: "[Device]: "
+labels: ["device-support", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping expand MacMelody's device support! Please provide details about your earbuds below.
+  - type: input
+    id: brand_model
+    attributes:
+      label: Earbud Brand & Model Name
+      placeholder: "e.g. OnePlus Nord Buds 3r / Realme Buds Air 7 Pro"
+    validations:
+      required: true
+  - type: dropdown
+    id: brand
+    attributes:
+      label: Brand
+      options:
+        - OnePlus
+        - OPPO
+        - Realme
+        - Other (OPOv1 Protocol compatible)
+    validations:
+      required: true
+  - type: checkboxes
+    id: features_working
+    attributes:
+      label: Which features work on your Mac?
+      description: Check all that apply if you've already tested with MacMelody.
+      options:
+        - label: Battery percentage (Left / Right / Case)
+        - label: Active Noise Cancellation (ANC / Transparency / Off)
+        - label: Equalizer presets
+        - label: Game Mode
+        - label: In-Ear Detection
+        - label: Spatial Audio
+  - type: textarea
+    id: additional_info
+    attributes:
+      label: Diagnostic Information / Packet Dumps
+      description: If you have diagnostic logs from the Diagnostics tab in MacMelody, paste them here (addresses are automatically redacted).
+      placeholder: "Paste diagnostic output or Bluetooth details here..."
+    validations:
+      required: false
