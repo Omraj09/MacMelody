@@ -8,7 +8,7 @@ struct GeneralSettingsPane: View {
             Section {
                 Toggle(isOn: Binding(get: { model.launchAtLogin.isEnabled }, set: { setLaunchAtLogin($0) })) {
                     VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                        Text("Open OneBuds at login")
+                        Text("Open MacMelody at login")
                         Text(model.launchAtLogin.errorMessage ?? model.launchAtLogin.statusText)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -20,7 +20,7 @@ struct GeneralSettingsPane: View {
                 }
             }
             Section("Privacy") {
-                Text("OneBuds works entirely on this Mac: no accounts, analytics or network access. Bluetooth addresses are redacted in exports.")
+                Text("MacMelody works entirely on this Mac: no accounts, analytics or network access. Bluetooth addresses are redacted in exports.")
                     .foregroundStyle(.secondary)
                 Button("Bluetooth Privacy Settings…", action: model.openBluetoothPrivacySettings)
             }

@@ -8,7 +8,7 @@ struct PopoverHeader: View {
         HStack(spacing: Theme.Spacing.m - 2) {
             DeviceIcon(isConnected: manager.connection.isConnected, diameter: Theme.Size.popoverDeviceIcon)
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
-                Text(manager.earbuds?.name ?? "OneBuds")
+                Text(manager.earbuds?.name ?? "MacMelody")
                     .font(.headline)
                     .lineLimit(1)
                 ConnectionStatusLabel()

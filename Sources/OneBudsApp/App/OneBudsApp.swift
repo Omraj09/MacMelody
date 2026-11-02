@@ -24,7 +24,7 @@ struct OneBudsApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        Window("OneBuds", id: AppModel.mainWindowID) {
+        Window("MacMelody", id: AppModel.mainWindowID) {
             MainWindow()
                 .environment(model)
                 .environment(model.manager)

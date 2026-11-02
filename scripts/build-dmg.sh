@@ -1,16 +1,16 @@
 #!/bin/bash
-# Builds a distributable .dmg installer for OneBuds containing OneBuds.app and an Applications symlink.
+# Builds a distributable .dmg installer for MacMelody containing MacMelody.app and an Applications symlink.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
-app="$root/build/OneBuds.app"
-dmg="$root/build/OneBuds.dmg"
-vol_name="OneBuds"
+app="$root/build/MacMelody.app"
+dmg="$root/build/MacMelody.dmg"
+vol_name="MacMelody"
 tmp_dmg="$root/build/pack.temp.dmg"
 
 # Ensure the app is built
 if [[ ! -d "$app" ]]; then
-  echo "Building OneBuds.app first..."
+  echo "Building MacMelody.app first..."
   "$root/scripts/build-app.sh"
 fi
 
@@ -19,7 +19,7 @@ staging="$root/build/dmg-staging"
 rm -rf "$staging" "$tmp_dmg" "$dmg"
 mkdir -p "$staging"
 
-cp -R "$app" "$staging/OneBuds.app"
+cp -R "$app" "$staging/MacMelody.app"
 ln -s /Applications "$staging/Applications"
 
 # Volume icon
@@ -67,7 +67,7 @@ if [[ -d "$mount_point" ]]; then
         set viewOptions to the icon view options of container window
         set icon size of viewOptions to 96
         set arrangement of viewOptions to not arranged
-        set position of item \"OneBuds.app\" of container window to {140, 160}
+        set position of item \"MacMelody.app\" of container window to {140, 160}
         set position of item \"Applications\" of container window to {400, 160}
         close
         open

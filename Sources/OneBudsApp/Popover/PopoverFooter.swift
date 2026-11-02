@@ -7,7 +7,7 @@ struct PopoverFooter: View {
 
     var body: some View {
         HStack(spacing: Theme.Spacing.l) {
-            Button("Open OneBuds", systemImage: "macwindow", action: showMainWindow)
+            Button("Open MacMelody", systemImage: "macwindow", action: showMainWindow)
             Button("Settings…", systemImage: "gearshape", action: showSettings)
                 .keyboardShortcut(",")
             Spacer()

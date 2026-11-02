@@ -12,10 +12,10 @@ final class LaunchAtLogin {
 
     var statusText: String {
         switch status {
-        case .enabled: "OneBuds opens when you log in."
-        case .requiresApproval: "Approve OneBuds in System Settings → General → Login Items."
-        case .notFound: "Install OneBuds in the Applications folder to use this option."
-        case .notRegistered: "OneBuds does not open at login."
+        case .enabled: "MacMelody opens when you log in."
+        case .requiresApproval: "Approve MacMelody in System Settings → General → Login Items."
+        case .notFound: "Install MacMelody in the Applications folder to use this option."
+        case .notRegistered: "MacMelody does not open at login."
         @unknown default: "Status unknown."
         }
     }

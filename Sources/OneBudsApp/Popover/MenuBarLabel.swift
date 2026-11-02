@@ -25,7 +25,7 @@ struct MenuBarLabel: View {
             }
             if manager.isDemo { Text("Demo") }
         }
-        .accessibilityLabel("OneBuds: \(manager.connection.displayText)")
+        .accessibilityLabel("MacMelody: \(manager.connection.displayText)")
         .onAppear { onAppear(openWindow) }
     }
 }

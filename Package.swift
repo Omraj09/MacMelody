@@ -4,10 +4,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "OneBuds",
+    name: "MacMelody",
     platforms: [.macOS(.v14)],
     products: [
-        .executable(name: "OneBuds", targets: ["OneBudsApp"]),
+        .executable(name: "MacMelody", targets: ["OneBudsApp"]),
         .executable(name: "onebuds-probe", targets: ["OneBudsProbe"]),
     ],
     targets: [

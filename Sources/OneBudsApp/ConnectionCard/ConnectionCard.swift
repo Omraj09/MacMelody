@@ -72,7 +72,7 @@ struct ConnectionCard: View {
                 Spacer(minLength: Theme.Spacing.s)
                 // The card's panel is never key (it must not take focus from the app in front), so
                 // the native prominent style would draw grey; this one keeps the accent.
-                Button("Open OneBuds", action: onOpen)
+                Button("Open MacMelody", action: onOpen)
                     .buttonStyle(.accent)
             }
             .padding(.horizontal, Theme.Spacing.l)

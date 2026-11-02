@@ -3,19 +3,19 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.local.onebuds</string>
+	<string>com.local.macmelody</string>
 	<key>CFBundleName</key>
-	<string>OneBuds</string>
+	<string>MacMelody</string>
 	<key>CFBundleDisplayName</key>
-	<string>OneBuds</string>
+	<string>MacMelody</string>
 	<key>CFBundleExecutable</key>
-	<string>OneBuds</string>
+	<string>MacMelody</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.1.0</string>
+	<string>1.0.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -29,6 +29,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Unofficial; not affiliated with OnePlus, OPPO or realme.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>OneBuds talks to your earbuds over Bluetooth to show battery levels and change noise control, equalizer and other settings. Everything stays on this Mac.</string>
+	<string>MacMelody communicates with your earbuds over Bluetooth to show battery levels, adjust noise control, spatial audio, equalizers, and controls directly from macOS.</string>
 </dict>
 </plist>
