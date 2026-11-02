@@ -81,10 +81,16 @@ Detailed device management and configuration window:
 
 ## 🎧 Supported Models
 
-MacMelody communicates natively with OnePlus, OPPO, and realme TWS earbuds via the OPOv1 protocol over Bluetooth RFCOMM and BLE.
+MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**, and **Realme** via the direct OPOv1 protocol over Bluetooth RFCOMM & BLE.
 
-### OnePlus
-| Model | Status | Tailored Features |
+> 🔍 **Search & Quick-Find:** Click any brand toggle below to view compatible models, or press <kbd>⌘</kbd> + <kbd>F</kbd> (<kbd>Ctrl</kbd> + <kbd>F</kbd>) to search for your device.
+
+<details>
+<summary><b>🔴 OnePlus Earbuds (14 Models) — Click to Toggle</b></summary>
+
+<br/>
+
+| Model | Status | Tailored Hardware Features |
 |---|:---:|---|
 | **OnePlus Nord Buds 4 Pro** | 🟢 Verified | Battery, ANC Tree (Smart/Deep/Med/Light), EQ, Spatial Audio, BassWave, Gestures |
 | **OnePlus Buds 3** | 🟢 Verified | Battery, ANC Tree (Smart/Deep/Med/Light), EQ Presets, Game Mode, In-Ear Detection |
@@ -101,8 +107,14 @@ MacMelody communicates natively with OnePlus, OPPO, and realme TWS earbuds via t
 | **OnePlus Buds Z2** | 🟡 Not Verified | Battery, Core ANC, In-Ear Detection, Master EQ, Gestures |
 | **OnePlus Buds Pro** | 🟡 Not Verified | Battery, ANC Tree, In-Ear Detection, Master EQ, Gestures |
 
-### OPPO
-| Model | Status | Tailored Features |
+</details>
+
+<details>
+<summary><b>🟢 OPPO Earbuds (14 Models) — Click to Toggle</b></summary>
+
+<br/>
+
+| Model | Status | Tailored Hardware Features |
 |---|:---:|---|
 | **OPPO Enco X4** | 🟡 Not Verified | Battery, Dynaudio EQ, 55dB ANC Tree, Spatial Audio, Dual Connection, Stem Gestures |
 | **OPPO Enco X2** | 🟡 Not Verified | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
@@ -119,8 +131,14 @@ MacMelody communicates natively with OnePlus, OPPO, and realme TWS earbuds via t
 | **OPPO Enco Free3** | 🟡 Not Verified | Battery, Bamboo Diaphragm ANC Tree, In-Ear Detection, Gestures |
 | **OPPO Enco X** | 🟡 Not Verified | Battery, Dynaudio EQ, ANC Tree, In-Ear Detection, Gestures |
 
-### Realme
-| Model | Status | Tailored Features |
+</details>
+
+<details>
+<summary><b>🟡 Realme Earbuds (15 Models) — Click to Toggle</b></summary>
+
+<br/>
+
+| Model | Status | Tailored Hardware Features |
 |---|:---:|---|
 | **Realme Buds Air 8 Pro** | 🟡 Not Verified | Battery, 55dB ANC Tree, 360° Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
 | **Realme Buds Air 8** | 🟡 Not Verified | Battery, 55dB ANC Tree, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
@@ -137,6 +155,8 @@ MacMelody communicates natively with OnePlus, OPPO, and realme TWS earbuds via t
 | **Realme Buds T200 Lite** | 🟡 Not Verified | Battery, AI ENC, Dual-Device Pairing, Dynamic Bass EQ, Gestures *(Non-ANC)* |
 | **Realme Buds T110** | 🟡 Not Verified | Battery, AI ENC, Dynamic Bass EQ, Low Latency, Gestures *(Non-ANC)* |
 | **Realme Buds N1** | 🟡 Not Verified | Battery, 46dB Hybrid ANC, 360° Spatial Audio, Dual Connection, Gestures |
+
+</details>
 
 ---
 
