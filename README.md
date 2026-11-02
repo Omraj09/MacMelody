@@ -94,7 +94,7 @@ MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**
 > 🔍 **Search & Quick-Find:** Click any brand toggle below to view compatible models, or press <kbd>⌘</kbd> + <kbd>F</kbd> (<kbd>Ctrl</kbd> + <kbd>F</kbd>) to search for your device.
 
 <details>
-<summary><b>🔴 OnePlus Earbuds (14 Models) — Click to Toggle</b></summary>
+<summary><b> OnePlus Earbuds (14 Models) — Click to Toggle</b></summary>
 
 <br/>
 
@@ -118,7 +118,7 @@ MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**
 </details>
 
 <details>
-<summary><b>🟢 OPPO Earbuds (14 Models) — Click to Toggle</b></summary>
+<summary><b> OPPO Earbuds (14 Models) — Click to Toggle</b></summary>
 
 <br/>
 
@@ -142,7 +142,7 @@ MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**
 </details>
 
 <details>
-<summary><b>🟡 Realme Earbuds (15 Models) — Click to Toggle</b></summary>
+<summary><b> Realme Earbuds (15 Models) — Click to Toggle</b></summary>
 
 <br/>
 
