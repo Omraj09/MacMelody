@@ -77,7 +77,7 @@ If macOS shows a **pairing dialog** during BLE discovery, click **Cancel** and t
 1. Take the Buds 3 out of the case, wear them, and make sure they are **connected to the Mac** (System Settings → Bluetooth shows "Connected"). Play a few seconds of audio to confirm.
 2. Run this in Terminal from the project folder:
    ```
-   cd "/Users/himanshu/Downloads/Visual Studio/Web Dev/VIbe_code/HeyMelodyMac"
+   cd "/Users/omrajsawant/Documents/Projects/Personal Projects/TWS Controls in Mac"
    scripts/run-probe.sh
    ```
 3. When macOS asks whether **"MacMelody Probe" would like to use Bluetooth**, click **Allow**.
