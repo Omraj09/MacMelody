@@ -3,13 +3,20 @@ import Observation
 import OneBudsCore
 import SwiftUI
 
+/// Observable state driving the menu bar popover open/close animation.
+@MainActor
+final class PopoverPresentationState: ObservableObject {
+    @Published var isOpen: Bool = false
+}
+
 /// Manages the macOS menu bar status item and its borderless, 100% transparent floating popover panel.
-/// This replaces MenuBarExtraWindow to completely eliminate the system rectangular window border and glitchy background.
+/// Provides smooth opening/closing scale+fade transitions and downward-only expansion.
 @MainActor
 final class MenuBarController: NSObject {
     private let model: AppModel
     private let manager: DeviceManager
     private let settings: AppSettings
+    private let presentationState = PopoverPresentationState()
     private var statusItem: NSStatusItem?
     private var panel: MenuBarPopoverPanel?
     private var globalEventMonitor: Any?
@@ -72,11 +79,7 @@ final class MenuBarController: NSObject {
     }
 
     @objc private func statusItemClicked(_ sender: Any?) {
-        guard let panel else {
-            showPopover()
-            return
-        }
-        if panel.isVisible {
+        if presentationState.isOpen {
             hidePopover()
         } else {
             showPopover()
@@ -84,10 +87,15 @@ final class MenuBarController: NSObject {
     }
 
     private func setupPanel() -> MenuBarPopoverPanel {
-        let panel = MenuBarPopoverPanel(model: model, manager: manager, settings: settings) { [weak self] in
+        let panel = MenuBarPopoverPanel(
+            model: model,
+            manager: manager,
+            settings: settings,
+            presentationState: presentationState
+        ) { [weak self] in
             self?.hidePopover()
         }
-        if let hostingView = panel.contentView as? MenuBarHostingView<AnyView> {
+        if let hostingView = panel.contentView as? MenuBarHostingView<PopoverContainerView> {
             hostingView.onFittingSizeChange = { [weak self] newSize in
                 self?.updatePanelFrame(for: newSize, animate: true)
             }
@@ -102,6 +110,7 @@ final class MenuBarController: NSObject {
         let panel = self.panel ?? setupPanel()
         self.panel = panel
 
+        presentationState.isOpen = false
         panel.layoutIfNeeded()
         let size = panel.contentView?.fittingSize ?? CGSize(width: Theme.Size.popoverWidth, height: 420)
         let buttonFrame = buttonWindow.convertToScreen(button.bounds)
@@ -118,6 +127,11 @@ final class MenuBarController: NSObject {
         panel.invalidateShadow()
         panel.makeKeyAndOrderFront(nil)
 
+        // Smooth opening bloom animation downward from menu bar icon
+        withAnimation(.spring(response: 0.28, dampingFraction: 0.78)) {
+            presentationState.isOpen = true
+        }
+
         startEventMonitors()
     }
 
@@ -131,6 +145,8 @@ final class MenuBarController: NSObject {
         let maxX = screen.visibleFrame.maxX - size.width - 8
         x = max(minX, min(x, maxX))
 
+        // Anchor top edge permanently below menu bar:
+        // Any change in height extends solely downwards!
         let top = buttonFrame.minY - 4
         let y = top - size.height
 
@@ -139,7 +155,7 @@ final class MenuBarController: NSObject {
 
         if animate {
             NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.22
+                context.duration = 0.24
                 context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
                 context.allowsImplicitAnimation = true
                 panel.animator().setFrame(newFrame, display: true)
@@ -155,8 +171,14 @@ final class MenuBarController: NSObject {
     }
 
     func hidePopover() {
-        panel?.orderOut(nil)
+        withAnimation(.easeOut(duration: 0.15)) {
+            presentationState.isOpen = false
+        }
         stopEventMonitors()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
+            guard let self, !self.presentationState.isOpen else { return }
+            self.panel?.orderOut(nil)
+        }
     }
 
     private func startEventMonitors() {
@@ -193,11 +215,39 @@ final class MenuBarController: NSObject {
     }
 }
 
+/// Outer container pinning PopoverView to the top edge and driving scale+fade entrance/exit animations.
+struct PopoverContainerView: View {
+    @ObservedObject var presentationState: PopoverPresentationState
+    let model: AppModel
+    let manager: DeviceManager
+    let settings: AppSettings
+
+    var body: some View {
+        VStack(spacing: 0) {
+            PopoverView()
+                .environment(model)
+                .environment(manager)
+                .environment(\.visualStyle, settings.visualStyle)
+                .environment(settings)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .scaleEffect(presentationState.isOpen ? 1.0 : 0.93, anchor: .top)
+        .opacity(presentationState.isOpen ? 1.0 : 0.0)
+        .offset(y: presentationState.isOpen ? 0 : -8)
+    }
+}
+
 /// A floating, non-activating borderless NSPanel that has 100% transparent backing and no rectangular chrome.
 final class MenuBarPopoverPanel: NSPanel {
     private let onDismiss: () -> Void
 
-    init(model: AppModel, manager: DeviceManager, settings: AppSettings, onDismiss: @escaping () -> Void) {
+    init(
+        model: AppModel,
+        manager: DeviceManager,
+        settings: AppSettings,
+        presentationState: PopoverPresentationState,
+        onDismiss: @escaping () -> Void
+    ) {
         self.onDismiss = onDismiss
         super.init(
             contentRect: .zero,
@@ -213,13 +263,14 @@ final class MenuBarPopoverPanel: NSPanel {
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
         self.animationBehavior = .none
 
-        let rootView = PopoverView()
-            .environment(model)
-            .environment(manager)
-            .environment(\.visualStyle, settings.visualStyle)
-            .environment(settings)
+        let container = PopoverContainerView(
+            presentationState: presentationState,
+            model: model,
+            manager: manager,
+            settings: settings
+        )
 
-        self.contentView = MenuBarHostingView(rootView: AnyView(rootView))
+        self.contentView = MenuBarHostingView(rootView: container)
     }
 
     override var canBecomeKey: Bool { true }
