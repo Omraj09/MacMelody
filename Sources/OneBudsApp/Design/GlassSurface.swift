@@ -27,7 +27,21 @@ struct GlassSurface<S: InsettableShape>: ViewModifier {
     private func glass(_ content: Content) -> some View {
         #if compiler(>=6.2)
         if #available(macOS 26.0, *) {
-            content.glassEffect(tint.map { Glass.regular.tint($0) } ?? .regular, in: shape)
+            content
+                .glassEffect(tint.map { Glass.regular.tint($0) } ?? .regular, in: shape)
+                .overlay {
+                    shape.strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                .white.opacity(isDark ? 0.35 : 0.70),
+                                .white.opacity(isDark ? 0.06 : 0.18)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 1
+                    )
+                }
         } else {
             approximatedGlass(content)
         }

@@ -4,6 +4,11 @@ import SwiftUI
 /// The primary interface: battery, noise control and quick toggles, one click from the menu bar.
 struct PopoverView: View {
     @Environment(DeviceManager.self) private var manager
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var outerShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: Theme.Radius.popover, style: .continuous)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
@@ -26,10 +31,29 @@ struct PopoverView: View {
             }
 
             Divider()
+                .opacity(0.5)
             PopoverFooter()
         }
-        .padding(Theme.Spacing.l - 2)
+        .padding(Theme.Spacing.l)
         .frame(width: Theme.Size.popoverWidth)
+        .surface(outerShape)
+        .overlay {
+            outerShape.strokeBorder(
+                LinearGradient(
+                    colors: [
+                        .white.opacity(colorScheme == .dark ? 0.38 : 0.75),
+                        .white.opacity(colorScheme == .dark ? 0.08 : 0.20)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                ),
+                lineWidth: 1
+            )
+        }
+        .clipShape(outerShape)
+        .shadow(color: .black.opacity(colorScheme == .dark ? 0.40 : 0.15), radius: 16, y: 6)
+        .padding(6)
+        .background(WindowTransparentBackground())
         .animateState(value: manager.connection.isConnected)
         .animateState(value: manager.lastError)
     }

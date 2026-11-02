@@ -22,7 +22,7 @@ struct AppearanceSettingsPane: View {
                 }
                 .pickerStyle(.segmented)
                 if reduceTransparency && settings.visualStyle == .glass {
-                    Label("Reduce Transparency is on, so OneBuds shows the standard style.", systemImage: "info.circle")
+                    Label("Reduce Transparency is on, so MacMelody shows the standard style.", systemImage: "info.circle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -35,7 +35,7 @@ struct AppearanceSettingsPane: View {
 
     private static var glassNote: String {
         if #available(macOS 26.0, *) {
-            return "Glass uses translucent surfaces that let your desktop show through. Real Liquid Glass is used when OneBuds is built with the macOS 26 SDK."
+            return "Liquid Glass provides native Apple glass refraction and specular reflections directly matching macOS design."
         }
         return "Glass uses translucent surfaces that let your desktop show through. Real Liquid Glass needs macOS 26 or later; this Mac gets a close approximation."
     }

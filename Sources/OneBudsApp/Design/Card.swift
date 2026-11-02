@@ -8,6 +8,6 @@ struct Card<Content: View>: View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m - 2, content: content)
             .padding(Theme.Spacing.m)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .surface(RoundedRectangle(cornerRadius: Theme.Radius.card))
+            .surface(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
     }
 }

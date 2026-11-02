@@ -61,7 +61,7 @@ final class AppSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         appearance = AppAppearance(rawValue: defaults.string(forKey: "appearance") ?? "") ?? .system
-        visualStyle = VisualStyle(rawValue: defaults.string(forKey: "visualStyle") ?? "") ?? .standard
+        visualStyle = VisualStyle(rawValue: defaults.string(forKey: "visualStyle") ?? "") ?? .glass
         showBatteryInMenuBar = defaults.object(forKey: "showBatteryInMenuBar") as? Bool ?? true
         showConnectionCard = defaults.object(forKey: "showConnectionCard") as? Bool ?? true
         cardDuration = CardDuration(rawValue: defaults.string(forKey: "cardDuration") ?? "") ?? .standard

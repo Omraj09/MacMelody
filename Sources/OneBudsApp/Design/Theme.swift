@@ -12,8 +12,9 @@ enum Theme {
     }
 
     enum Radius {
-        static let control: CGFloat = 8
-        static let card: CGFloat = 12
+        static let control: CGFloat = 10
+        static let card: CGFloat = 16
+        static let popover: CGFloat = 22
     }
 
     enum Size {
