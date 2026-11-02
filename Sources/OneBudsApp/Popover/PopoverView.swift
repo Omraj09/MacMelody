@@ -5,7 +5,10 @@ import SwiftUI
 struct PopoverView: View {
     @Environment(DeviceManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.visualStyle) private var visualStyle
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
+    private var isDark: Bool { colorScheme == .dark }
     private var outerShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: Theme.Radius.popover, style: .continuous)
     }
@@ -36,19 +39,44 @@ struct PopoverView: View {
         }
         .padding(Theme.Spacing.l)
         .frame(width: Theme.Size.popoverWidth)
-        .surface(outerShape)
+        .background {
+            ZStack {
+                VisualEffectBackground(material: .popover, state: .active)
+                if visualStyle == .glass && !reduceTransparency {
+                    Color.white.opacity(isDark ? 0.06 : 0.20)
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(isDark ? 0.18 : 0.45),
+                            .clear
+                        ],
+                        startPoint: .top,
+                        endPoint: .center
+                    )
+                } else {
+                    // Standard: clean completely translucent vibrancy
+                    Color(nsColor: .windowBackgroundColor).opacity(isDark ? 0.15 : 0.25)
+                }
+            }
+        }
         .overlay {
-            outerShape.strokeBorder(
-                LinearGradient(
-                    colors: [
-                        .white.opacity(colorScheme == .dark ? 0.38 : 0.75),
-                        .white.opacity(colorScheme == .dark ? 0.08 : 0.20)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                ),
-                lineWidth: 1
-            )
+            if visualStyle == .glass && !reduceTransparency {
+                outerShape.strokeBorder(
+                    LinearGradient(
+                        colors: [
+                            .white.opacity(isDark ? 0.45 : 0.85),
+                            .white.opacity(isDark ? 0.08 : 0.22)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ),
+                    lineWidth: 1
+                )
+            } else {
+                outerShape.strokeBorder(
+                    Color.primary.opacity(isDark ? 0.14 : 0.09),
+                    lineWidth: 1
+                )
+            }
         }
         .clipShape(outerShape)
         .animateState(value: manager.connection.isConnected)

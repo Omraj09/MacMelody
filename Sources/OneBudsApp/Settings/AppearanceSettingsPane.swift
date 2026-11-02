@@ -34,9 +34,6 @@ struct AppearanceSettingsPane: View {
     }
 
     private static var glassNote: String {
-        if #available(macOS 26.0, *) {
-            return "Liquid Glass provides native Apple glass refraction and specular reflections directly matching macOS design."
-        }
-        return "Glass uses translucent surfaces that let your desktop show through. Real Liquid Glass needs macOS 26 or later; this Mac gets a close approximation."
+        return "Standard provides completely translucent native frosted glass vibrancy. Liquid Glass adds dynamic specular highlights and glossy reflections."
     }
 }

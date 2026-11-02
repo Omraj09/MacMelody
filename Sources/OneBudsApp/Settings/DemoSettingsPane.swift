@@ -23,7 +23,7 @@ struct DemoSettingsPane: View {
                 }
                 .disabled(!model.settings.demoMode)
             } footer: {
-                FormFooter("Pick a model to preview how OneBuds adapts its controls to it.")
+                FormFooter("Pick a model to preview how MacMelody adapts its controls to it.")
             }
         }
         .settingsPaneStyle()

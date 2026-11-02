@@ -1,5 +1,5 @@
-/// Surface style. `glass` uses translucent, glass-like surfaces (real Liquid Glass on macOS 26+
-/// when built with the macOS 26 SDK); it falls back to `standard` under Reduce Transparency.
+/// Surface style. `glass` uses Liquid Glass surfaces with specular highlights;
+/// `standard` uses completely translucent native macOS frosted glass vibrancy.
 enum VisualStyle: String, CaseIterable, Identifiable {
     case standard, glass
 
@@ -8,7 +8,7 @@ enum VisualStyle: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .standard: "Standard"
-        case .glass: "Glass"
+        case .glass: "Liquid Glass"
         }
     }
 }

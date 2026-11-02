@@ -11,6 +11,11 @@ struct MainSidebar: View {
                     Label(item.title, systemImage: item.symbol).tag(item)
                 }
             }
+            Section("Settings") {
+                ForEach(SidebarItem.settings) { item in
+                    Label(item.title, systemImage: item.symbol).tag(item)
+                }
+            }
             Section("Information") {
                 ForEach(SidebarItem.information) { item in
                     Label(item.title, systemImage: item.symbol).tag(item)
