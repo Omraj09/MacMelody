@@ -12,18 +12,6 @@ struct OneBudsApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra {
-            PopoverView()
-                .environment(model)
-                .environment(model.manager)
-                .environment(\.visualStyle, model.settings.visualStyle)
-        } label: {
-            MenuBarLabel(manager: model.manager, settings: model.settings) { [model] openWindow in
-                model.openWindow = { openWindow(id: $0) }
-            }
-        }
-        .menuBarExtraStyle(.window)
-
         Window("MacMelody", id: AppModel.mainWindowID) {
             MainWindow()
                 .environment(model)

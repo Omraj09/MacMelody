@@ -17,6 +17,7 @@ final class AppModel {
     let diagnostics = DiagnosticsModel()
     let connectionCard: ConnectionCardPresenter
     private var connectionCardPanel: ConnectionCardPanel?
+    private var menuBarController: MenuBarController?
     /// Opens a SwiftUI window by id; captured from the menu-bar label, which is always in the scene.
     var openWindow: ((String) -> Void)?
     /// Main-window sidebar selection.
@@ -54,6 +55,7 @@ final class AppModel {
         connectionCardPanel = panel
         connectionCard.host = panel
         connectionCard.start()
+        menuBarController = MenuBarController(model: self, manager: manager, settings: settings)
         manager.start()
         // After sleep, wait for Bluetooth to settle, then re-check the earbuds.
         wakeObserver = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [manager] _ in
