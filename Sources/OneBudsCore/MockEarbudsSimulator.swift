@@ -87,8 +87,6 @@ public actor MockEarbudsSimulator {
         case 0x0406:
             equalizerPreset = p.first ?? equalizerPreset
             return [reply([0x00])]
-        case 0x0418:
-            return [reply([0x00])]
         case 0x010D:
             let ids = Array(p.dropFirst().prefix(Int(p.first ?? 0)))
             let known = ids.filter { features[$0] != nil }
