@@ -16,6 +16,8 @@ struct FeatureTogglesSection: View {
     private var rows: [Row] {
         guard let opo = manager.profile?.opo else { return [] }
         let candidates: [(Capability, UInt8?, String)] = [
+            (.spatialAudio, opo.spatialAudioFeatureID, "dot.radiowaves.left.and.right"),
+            (.bassWave, opo.bassWaveFeatureID, "waveform.path"),
             (.gameMode, opo.gameModeFeatureID, "gamecontroller"),
             (.wearDetection, opo.wearDetectionFeatureID, "ear"),
             (.dualConnection, opo.dualConnectionFeatureID, "laptopcomputer.and.iphone"),

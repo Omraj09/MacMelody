@@ -79,6 +79,56 @@ public enum DeviceRegistry {
                              by: "owner-requested test"),
         ])
 
+    public static let nordBuds4Pro = DeviceProfile(
+        id: "oneplus-nord-buds-4-pro",
+        manufacturer: .onePlus,
+        model: "OnePlus Nord Buds 4 Pro",
+        displayName: "OnePlus Nord Buds 4 Pro",
+        bluetoothNames: ["OnePlus Nord Buds 4 Pro", "Nord Buds 4 Pro", "OnePlus Buds 4 Pro", "Omraj’s OnePlus Buds 4 Pro", "Omraj's OnePlus Buds 4 Pro"],
+        transports: [.rfcomm, .ble],
+        rfcommServiceUUIDs: [opoService, standardSPP],
+        ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(
+            productIDs: ["066814"],
+            noiseModes: ncTreeModes,
+            equalizerPresets: [
+                EQPresetOption(id: 0, name: "Balanced"),
+                EQPresetOption(id: 1, name: "Deep Sea Bass"),
+                EQPresetOption(id: 2, name: "Pure Vocals"),
+                EQPresetOption(id: 3, name: "Bright & Crisp"),
+            ],
+            featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x0C, 0x11, 0x18, 0x1B, 0x1D],
+            gameModeFeatureID: 0x06,
+            wearDetectionFeatureID: 0x04,
+            dualConnectionFeatureID: 0x11,
+            spatialAudioFeatureID: 0x0B,
+            bassWaveFeatureID: 0x0C,
+            gestureFunctions: [
+                GestureAction.single.rawValue: [0x00, 0x01],
+                GestureAction.double.rawValue: [0x03, 0x01, 0x05, 0x06, 0x11, 0x00],
+                GestureAction.triple.rawValue: [0x03, 0x05, 0x06, 0x11, 0x00],
+                GestureAction.hold.rawValue: [0x08, 0x03, 0x00],
+                GestureAction.slide.rawValue: [0x07, 0x00],
+            ]),
+        status: .verified,
+        capabilities: [
+            .battery: .verified, .noiseControl: .verified, .equalizer: .verified,
+            .gestures: .verified, .gameMode: .verified, .wearDetection: .verified,
+            .dualConnection: .verified, .spatialAudio: .verified, .bassWave: .verified,
+            .deviceInfo: .verified,
+        ],
+        testedFirmware: ["158.158.106"],
+        limitations: [
+            "Hardware-verified on OnePlus Nord Buds 4 Pro (fw 158.158.106): RFCOMM ch 7, product ID 066814, battery readings, ANC Smart mode, EQ presets, Spatial audio (0x0B), BassWave (0x0C), Game mode (0x06), In-ear detection (0x04), and Dual connection (0x11).",
+        ],
+        sources: ["Hardware-tested 2026-11-02", "S4", "S5", "S12"],
+        evidence: [
+            HardwareEvidence(date: "2026-11-02", firmware: "158.158.106",
+                             what: "Live probe verified: RFCOMM ch 7, product ID 066814, battery L/R readings, ANC Smart read (0x0080), EQ Balanced (0), feature status switches (wear 0x04, game 0x06, spatial 0x0B, BassWave 0x0C, dual 0x11), and 14 gestures with stem volume slide.",
+                             by: "Antigravity active probe")
+        ])
+
     public static let nordBuds3Pro = DeviceProfile(
         id: "oneplus-nord-buds-3-pro",
         manufacturer: .onePlus,
@@ -195,19 +245,34 @@ public enum DeviceRegistry {
         unknown("realme-buds-t310", .realme, "realme Buds T310", productID: "063C12", note: nil),
     ]
 
-    public static let all: [DeviceProfile] = [onePlusBuds3, nordBuds3Pro, realmeBudsAir5, realmeBudsT300]
+    public static let all: [DeviceProfile] = [nordBuds4Pro, onePlusBuds3, nordBuds3Pro, realmeBudsAir5, realmeBudsT300]
         + unknownModels + realmeUnknownModels + [realmeBudsWireless2]
 
-    /// Selects a profile by exact Bluetooth name first, then by product id. Never by family name.
+    /// Selects a profile by exact Bluetooth name first, trimmed possessive prefix (e.g. "Omraj's ..."), then by product id.
     public static func match(name: String?, productID: String? = nil, in profiles: [DeviceProfile] = all) -> DeviceProfile? {
         if let name {
             let lowered = name.trimmingCharacters(in: .whitespaces).lowercased()
+            // 1. Exact name match
             if let profile = profiles.first(where: { $0.bluetoothNames.contains { $0.lowercased() == lowered } }) {
                 return profile
+            }
+            // 2. User ownership prefix (e.g. "Omraj’s OnePlus Buds 4 Pro" -> "OnePlus Buds 4 Pro")
+            if let stripped = stripPossessivePrefix(lowered) {
+                if let profile = profiles.first(where: { $0.bluetoothNames.contains { $0.lowercased() == stripped } }) {
+                    return profile
+                }
             }
         }
         if let productID = productID?.uppercased() {
             return profiles.first { $0.opo?.productIDs.contains(productID) == true }
+        }
+        return nil
+    }
+
+    private static func stripPossessivePrefix(_ name: String) -> String? {
+        let pattern = #"^.+?['’]s\s+"#
+        if let range = name.range(of: pattern, options: .regularExpression) {
+            return String(name[range.upperBound...])
         }
         return nil
     }

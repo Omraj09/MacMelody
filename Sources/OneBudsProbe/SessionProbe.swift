@@ -110,6 +110,21 @@ final class SessionProbe {
             log("   decode (Hypothesis): battery \(text ?? "unparsed")")
         }
 
+        log("── probing read-only features ──")
+        if let reply = await query(0x010C, payload: [0x01, 0x01]) {
+            log("   decode: noise control read: [\(Hex.string(reply.payload))]")
+        }
+        if let reply = await query(0x010F) {
+            log("   decode: EQ preset read: [\(Hex.string(reply.payload))]")
+        }
+        let testFeatureIDs: [UInt8] = [0x04, 0x05, 0x06, 0x0B, 0x0C, 0x11, 0x18, 0x1B, 0x1C, 0x1D]
+        if let reply = await query(0x010D, payload: [UInt8(testFeatureIDs.count)] + testFeatureIDs) {
+            log("   decode: feature switches read: [\(Hex.string(reply.payload))]")
+        }
+        if let reply = await query(0x0108) {
+            log("   decode: gestures read: [\(Hex.string(reply.payload))]")
+        }
+
         log("listening 3 s for unsolicited frames…")
         try? await Task.sleep(for: .seconds(3))
         await transport.disconnect()
@@ -119,10 +134,10 @@ final class SessionProbe {
 
     // MARK: Frames
 
-    private func query(_ command: UInt16) async -> OPOFrame? {
+    private func query(_ command: UInt16, payload: [UInt8] = []) async -> OPOFrame? {
         sequence = sequence &+ 1
         if sequence == 0 || sequence == 0xFF { sequence = 1 }
-        let frame = OPOFrame(command: command, sequence: sequence)
+        let frame = OPOFrame(command: command, sequence: sequence, payload: payload)
         let seq = sequence
         guard send(frame, note: OPOCommand.describe(command)) else { return nil }
         let expected = command | OPOCommand.replyBit

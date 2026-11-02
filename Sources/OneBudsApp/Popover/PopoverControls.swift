@@ -23,6 +23,18 @@ struct PopoverControls: View {
                 }
             }
 
+            if manager.presentation(.spatialAudio) != .hidden, let id = manager.profile?.opo?.spatialAudioFeatureID, manager.features[id] != nil {
+                Card {
+                    FeatureToggleRow(capability: .spatialAudio, featureID: id, symbol: "dot.radiowaves.left.and.right")
+                }
+            }
+
+            if manager.presentation(.bassWave) != .hidden, let id = manager.profile?.opo?.bassWaveFeatureID, manager.features[id] != nil {
+                Card {
+                    FeatureToggleRow(capability: .bassWave, featureID: id, symbol: "waveform.path")
+                }
+            }
+
             if manager.presentation(.gameMode) != .hidden, let id = manager.profile?.opo?.gameModeFeatureID, manager.features[id] != nil {
                 Card {
                     FeatureToggleRow(capability: .gameMode, featureID: id, symbol: "gamecontroller")

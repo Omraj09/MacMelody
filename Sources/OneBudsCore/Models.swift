@@ -3,7 +3,7 @@ import OneBudsProtocol
 
 /// Features OneBuds knows how to present. Each device profile rates each one independently.
 public enum Capability: String, CaseIterable, Sendable, Codable, Identifiable {
-    case battery, noiseControl, equalizer, gestures, gameMode, wearDetection, dualConnection, deviceInfo
+    case battery, noiseControl, equalizer, gestures, gameMode, wearDetection, dualConnection, deviceInfo, spatialAudio, bassWave
 
     public var id: String { rawValue }
 
@@ -17,6 +17,8 @@ public enum Capability: String, CaseIterable, Sendable, Codable, Identifiable {
         case .wearDetection: "In-ear detection"
         case .dualConnection: "Dual connection"
         case .deviceInfo: "Device information"
+        case .spatialAudio: "Spatial audio"
+        case .bassWave: "BassWave™"
         }
     }
 }

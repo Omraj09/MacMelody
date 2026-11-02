@@ -52,6 +52,8 @@ public struct OPOParameters: Sendable {
     public var gameModeFeatureID: UInt8?
     public var wearDetectionFeatureID: UInt8?
     public var dualConnectionFeatureID: UInt8?
+    public var spatialAudioFeatureID: UInt8?
+    public var bassWaveFeatureID: UInt8?
     /// Allowed gesture functions per action (`GestureAction` raw value → function codes).
     public var gestureFunctions: [UInt8: [UInt8]]
     /// Model-specific function names that override `GestureFunction.names` (e.g. realme uses
@@ -63,14 +65,14 @@ public struct OPOParameters: Sendable {
     /// Feature ids OneBuds may ever write with `0x0403`. Power saving (0x17, restarts the buds)
     /// and Hi-Res (0x18, drops the link) are deliberately never writable.
     public var writableFeatureIDs: Set<UInt8> {
-        Set([gameModeFeatureID, wearDetectionFeatureID, dualConnectionFeatureID].compactMap { $0 })
+        Set([gameModeFeatureID, wearDetectionFeatureID, dualConnectionFeatureID, spatialAudioFeatureID, bassWaveFeatureID].compactMap { $0 })
     }
 
     public init(productIDs: [String], answersTimeRequest: Bool = true, subscribesToEvents: Bool = true,
                 noiseModes: [NoiseModeOption] = [], equalizerPresets: [EQPresetOption] = [],
                 featureStatusIDs: [UInt8] = [], gameModeFeatureID: UInt8? = nil, wearDetectionFeatureID: UInt8? = nil,
-                dualConnectionFeatureID: UInt8? = nil, gestureFunctions: [UInt8: [UInt8]] = [:],
-                gestureFunctionNames: [UInt8: String] = [:]) {
+                dualConnectionFeatureID: UInt8? = nil, spatialAudioFeatureID: UInt8? = nil, bassWaveFeatureID: UInt8? = nil,
+                gestureFunctions: [UInt8: [UInt8]] = [:], gestureFunctionNames: [UInt8: String] = [:]) {
         self.productIDs = productIDs
         self.answersTimeRequest = answersTimeRequest
         self.subscribesToEvents = subscribesToEvents
@@ -80,6 +82,8 @@ public struct OPOParameters: Sendable {
         self.gameModeFeatureID = gameModeFeatureID
         self.wearDetectionFeatureID = wearDetectionFeatureID
         self.dualConnectionFeatureID = dualConnectionFeatureID
+        self.spatialAudioFeatureID = spatialAudioFeatureID
+        self.bassWaveFeatureID = bassWaveFeatureID
         self.gestureFunctions = gestureFunctions
         self.gestureFunctionNames = gestureFunctionNames
     }
