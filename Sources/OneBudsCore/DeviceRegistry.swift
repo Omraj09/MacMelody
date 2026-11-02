@@ -144,10 +144,14 @@ public enum DeviceRegistry {
             noiseModes: ncTreeModes,
             featureStatusIDs: [0x05, 0x04, 0x0B, 0x0C, 0x11, 0x18, 0x06, 0x1B, 0x1D],
             gameModeFeatureID: 0x06,
-            wearDetectionFeatureID: 0x04),
+            wearDetectionFeatureID: 0x04,
+            dualConnectionFeatureID: 0x11,
+            spatialAudioFeatureID: 0x0B,
+            bassWaveFeatureID: 0x0C,
+            gestureFunctions: oppoGestures),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .gameMode: .experimental,
-                       .wearDetection: .experimental, .deviceInfo: .experimental],
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .bassWave: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
         testedFirmware: [],
         limitations: [
             "Protocol reference model (S1, S2 tested it over BLE); not tested with MacMelody.",
@@ -223,11 +227,11 @@ public enum DeviceRegistry {
         bluetoothNames: ["OnePlus Buds 4", "Buds 4"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
         protocolKind: .opoV1,
         opo: OPOParameters(productIDs: ["065414"], noiseModes: ncTreeModes, equalizerPresets: onePlusEQ,
-                           featureStatusIDs: [0x04, 0x05, 0x06, 0x11], gameModeFeatureID: 0x06,
-                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, gestureFunctions: oppoGestures),
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x0C, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, bassWaveFeatureID: 0x0C, gestureFunctions: oppoGestures),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
-                       .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .bassWave: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
         testedFirmware: [], limitations: ["Fully documented OPO protocol parameters; 50dB ANC tree and low latency."], sources: ["S4", "S5"], evidence: [])
 
     public static let nordBuds4 = DeviceProfile(
@@ -591,12 +595,12 @@ public enum DeviceRegistry {
         bluetoothNames: ["realme Buds T310", "Realme Buds T310", "Buds T310"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
         protocolKind: .opoV1,
         opo: OPOParameters(productIDs: ["063C12"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
-                           featureStatusIDs: [0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
-                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: realmeGestures,
+                           featureStatusIDs: [0x06, 0x0B, 0x0C, 0x11], gameModeFeatureID: 0x06,
+                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, bassWaveFeatureID: 0x0C, gestureFunctions: realmeGestures,
                            gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
-                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental],
+                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .bassWave: .experimental, .deviceInfo: .experimental],
         testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5"], evidence: [])
 
     public static let realmeBudsT200 = DeviceProfile(
@@ -661,12 +665,12 @@ public enum DeviceRegistry {
         bluetoothNames: ["realme Buds N1", "Realme Buds N1", "Buds N1"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
         protocolKind: .opoV1,
         opo: OPOParameters(productIDs: ["064012"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
-                           featureStatusIDs: [0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
-                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: realmeGestures,
+                           featureStatusIDs: [0x06, 0x0B, 0x0C, 0x11], gameModeFeatureID: 0x06,
+                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, bassWaveFeatureID: 0x0C, gestureFunctions: realmeGestures,
                            gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
-                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental],
+                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .bassWave: .experimental, .deviceInfo: .experimental],
         testedFirmware: [], limitations: realmeLimitations, sources: ["S4"], evidence: [])
 
     /// realme TL-family noise values: the written value is also the reported value (realme Link data
@@ -721,12 +725,12 @@ public enum DeviceRegistry {
                            noiseModes: [NoiseModeOption(.off, set: [0x01], read: 0x01),
                                         NoiseModeOption(.transparency, set: [0x02], read: 0x02),
                                         NoiseModeOption(.noiseCancelling(nil), set: [0x08], read: 0x08)],
-                           equalizerPresets: realmeEQ, featureStatusIDs: [0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
-                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: realmeGestures,
+                           equalizerPresets: realmeEQ, featureStatusIDs: [0x06, 0x0B, 0x0C, 0x11], gameModeFeatureID: 0x06,
+                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, bassWaveFeatureID: 0x0C, gestureFunctions: realmeGestures,
                            gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
-                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental],
+                       .gameMode: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .bassWave: .experimental, .deviceInfo: .experimental],
         testedFirmware: [], limitations: realmeLimitations + ["No noise-cancelling levels; no in-ear detection in the vendor list."],
         sources: ["S4", "S5", "S10", "S15"], evidence: [])
 

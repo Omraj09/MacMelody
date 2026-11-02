@@ -74,6 +74,8 @@ public final class DeviceManager {
     public private(set) var pendingNoiseControl: NoiseControlMode?
     public private(set) var equalizerPreset: UInt8?
     public private(set) var features: [UInt8: Bool] = [:]
+    public private(set) var featureRawValues: [UInt8: UInt8] = [:]
+    public private(set) var customEQBands: [Int8] = [0, 0, 0, 0, 0, 0]
     public private(set) var gestures: [GestureBinding] = []
     public private(set) var deviceInfo: DeviceInfo?
     public private(set) var wear: [UInt8: UInt8] = [:]
@@ -318,8 +320,8 @@ public final class DeviceManager {
             equalizerPreset = preset
         }
         let featureIDs = featureIDs(for: profile)
-        if !featureIDs.isEmpty, case .features(let values)? = await read(.readFeatures(featureIDs)), stillCurrent() {
-            features.merge(values) { $1 }
+        if !featureIDs.isEmpty, let res = await read(.readFeatures(featureIDs)), stillCurrent() {
+            apply(res)
         }
         if profile.presentation(.gestures) != .hidden, case .gestures(let bindings)? = await read(.readGestures), stillCurrent() {
             gestures = bindings
@@ -335,11 +337,22 @@ public final class DeviceManager {
 
     private func featureIDs(for profile: DeviceProfile) -> [UInt8] {
         guard let opo = profile.opo else { return [] }
-        return [(Capability.gameMode, opo.gameModeFeatureID), (.wearDetection, opo.wearDetectionFeatureID), (.dualConnection, opo.dualConnectionFeatureID)]
+        return [(Capability.gameMode, opo.gameModeFeatureID),
+                (.wearDetection, opo.wearDetectionFeatureID),
+                (.dualConnection, opo.dualConnectionFeatureID),
+                (.spatialAudio, opo.spatialAudioFeatureID),
+                (.bassWave, opo.bassWaveFeatureID)]
             .compactMap { capability, id in profile.presentation(capability) != .hidden ? id : nil }
     }
 
     // MARK: Changing settings
+
+    public var bassWaveLevel: Int {
+        if let raw = featureRawValues[0x0C] {
+            return Int(raw)
+        }
+        return (features[0x0C] == true) ? 1 : 0
+    }
 
     public func setNoiseControl(_ mode: NoiseControlMode) async {
         pendingNoiseControl = mode
@@ -351,8 +364,25 @@ public final class DeviceManager {
         await run(.equalizer, .setEqualizer(presetID: presetID))
     }
 
+    public func setCustomEQ(bands: [Int8]) async {
+        customEQBands = bands
+        await run(.equalizer, .setCustomEQ(bands: bands))
+    }
+
     public func setFeature(_ id: UInt8, enabled: Bool) async {
+        if id == 0x0C {
+            let targetLevel: Int = enabled ? (bassWaveLevel > 0 ? bassWaveLevel : 2) : 0
+            await setBassWaveLevel(targetLevel)
+            return
+        }
         await run(.feature(id), .setFeature(id: id, enabled: enabled))
+    }
+
+    public func setBassWaveLevel(_ level: Int) async {
+        let clamped = UInt8(max(0, min(4, level)))
+        featureRawValues[0x0C] = clamped
+        features[0x0C] = (clamped > 0)
+        await run(.feature(0x0C), .setFeatureValue(id: 0x0C, value: clamped))
     }
 
     public func setGesture(_ binding: GestureBinding) async {
@@ -389,7 +419,19 @@ public final class DeviceManager {
         case .battery(let value): battery = value
         case .noiseControl(let mode): noiseControl = mode
         case .equalizer(let id): equalizerPreset = id
-        case .features(let values): features.merge(values) { $1 }
+        case .customEQ(let bands): customEQBands = bands
+        case .features(let values):
+            features.merge(values) { $1 }
+            for (id, val) in values {
+                if featureRawValues[id] == nil {
+                    featureRawValues[id] = val ? 1 : 0
+                }
+            }
+        case .featureValues(let rawValues):
+            featureRawValues.merge(rawValues) { $1 }
+            for (id, val) in rawValues {
+                features[id] = (val != 0)
+            }
         case .gestures(let bindings): gestures = bindings
         case .deviceInfo(let info): deviceInfo = info
         }
@@ -415,7 +457,9 @@ public final class DeviceManager {
         case .battery(let update): battery = (battery ?? BatteryStatus()).merging(update)
         case .noiseControl(let mode): noiseControl = mode
         case .equalizer(let id): equalizerPreset = id
-        case .feature(let id, let enabled): features[id] = enabled
+        case .feature(let id, let enabled):
+            features[id] = enabled
+            featureRawValues[id] = enabled ? max(featureRawValues[id] ?? 1, 1) : 0
         case .wear(let values): wear.merge(values) { $1 }
         case .packet(let entry):
             guard isPacketLoggingEnabled else { return }
@@ -473,6 +517,8 @@ public final class DeviceManager {
         pendingNoiseControl = nil
         equalizerPreset = nil
         features = [:]
+        featureRawValues = [:]
+        customEQBands = [0, 0, 0, 0, 0, 0]
         gestures = []
         deviceInfo = nil
         wear = [:]

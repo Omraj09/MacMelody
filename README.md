@@ -41,6 +41,8 @@ Quick access from your menu bar with genuine macOS Liquid Glass vibrancy:
 - **Spring Bloom Motion:** Smooth opening bloom directly from the menu bar icon.
 - **Downward Expansion:** Selecting ANC depths expands the panel strictly downwards in smooth lockstep.
 - **Noise Control:** Toggle between **Off**, **ANC**, and **Transparency** with depth selection (**Smart**, **Deep**, **Medium**, **Light**).
+- **Custom EQ Studio:** Interactive 6-band spline frequency visualizer with professional dB faders and one-click curve presets.
+- **BassWave™ 4 Levels:** Full discrete 4-level dynamic bass algorithm matching HeyMelody (Level 1 Mild to Level 4 Max).
 - **Game Mode:** One-click low-latency audio toggle.
 - **Live Battery Rings:** Real-time percentage indicators for Left and Right earbuds.
 
@@ -69,7 +71,8 @@ Quick access from your menu bar with genuine macOS Liquid Glass vibrancy:
 Detailed device management and configuration window:
 
 - **Verified Hardware Info:** Live connection state, classic RFCOMM transport, and firmware version.
-- **Advanced Features:** Manage In-ear detection, Equalizer profiles, and Touch Gestures.
+- **Custom Parametric EQ & BassWave:** 6-band interactive spline equalizer studio (-6 dB to +6 dB), curve presets, and 4-level BassWave dynamics.
+- **Advanced Features:** Manage In-ear detection, Spatial Audio, Equalizer profiles, and Touch Gestures.
 - **Independent Lifecycle:** Closing the main window leaves the menu bar companion running seamlessly.
 - **Local Diagnostics:** Read-only Bluetooth packet inspection with automatic identifier redaction.
 

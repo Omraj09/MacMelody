@@ -270,8 +270,10 @@ public enum EarbudCommand: Sendable, Equatable {
     case setNoiseControl(NoiseControlMode)
     case readEqualizer
     case setEqualizer(presetID: UInt8)
+    case setCustomEQ(bands: [Int8])
     case readFeatures([UInt8])
     case setFeature(id: UInt8, enabled: Bool)
+    case setFeatureValue(id: UInt8, value: UInt8)
     case readGestures
     case setGestures([GestureBinding])
     case readDeviceInfo
@@ -281,7 +283,9 @@ public enum EarbudResponse: Sendable, Equatable {
     case battery(BatteryStatus)
     case noiseControl(NoiseControlMode)
     case equalizer(presetID: UInt8)
+    case customEQ(bands: [Int8])
     case features([UInt8: Bool])
+    case featureValues([UInt8: UInt8])
     case gestures([GestureBinding])
     case deviceInfo(DeviceInfo)
 }

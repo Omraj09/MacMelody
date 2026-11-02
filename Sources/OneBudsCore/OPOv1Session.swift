@@ -156,7 +156,8 @@ public actor OPOv1Session: EarbudProtocol {
             return .equalizer(presetID: actual)
 
         case .readFeatures(let ids):
-            return .features(try await readFeatures(ids.filter(parameters.featureStatusIDs.contains)))
+            let filtered = ids.filter(parameters.featureStatusIDs.contains)
+            return .featureValues(try await readFeatureRawValues(filtered))
 
         case .setFeature(let id, let enabled):
             guard parameters.writableFeatureIDs.contains(id) else {
@@ -168,6 +169,22 @@ public actor OPOv1Session: EarbudProtocol {
                 throw ProtocolError.notApplied(expected: enabled ? "on" : "off", actual: values[id].map { $0 ? "on" : "off" } ?? "no value")
             }
             return .features(values)
+
+        case .setFeatureValue(let id, let value):
+            guard parameters.writableFeatureIDs.contains(id) else {
+                throw ProtocolError.unsupported(String(format: "feature 0x%02X", id))
+            }
+            try await acknowledged(0x0403, payload: [id, value])
+            let raws = try await readFeatureRawValues([id])
+            guard raws[id] == value else {
+                throw ProtocolError.notApplied(expected: "\(value)", actual: raws[id].map { "\($0)" } ?? "no value")
+            }
+            return .featureValues(raws)
+
+        case .setCustomEQ(let bands):
+            let rawBands = bands.map { UInt8(bitPattern: $0) }
+            try await acknowledged(0x0418, payload: [0x01, UInt8(bands.count)] + rawBands)
+            return .customEQ(bands: bands)
 
         case .readGestures:
             return .gestures(try await readGestures())
@@ -223,6 +240,16 @@ public actor OPOv1Session: EarbudProtocol {
         guard p.count >= 2, p[0] == 0x00, p.count >= 2 + Int(p[1]) * 2 else { throw ProtocolError.malformedReply(command: 0x010D) }
         var values: [UInt8: Bool] = [:]
         for index in 0..<Int(p[1]) { values[p[2 + index * 2]] = p[3 + index * 2] != 0 }
+        return values
+    }
+
+    private func readFeatureRawValues(_ ids: [UInt8]) async throws -> [UInt8: UInt8] {
+        guard !ids.isEmpty else { return [:] }
+        let reply = try await request(0x010D, payload: [UInt8(ids.count)] + ids)
+        let p = reply.payload
+        guard p.count >= 2, p[0] == 0x00, p.count >= 2 + Int(p[1]) * 2 else { throw ProtocolError.malformedReply(command: 0x010D) }
+        var values: [UInt8: UInt8] = [:]
+        for index in 0..<Int(p[1]) { values[p[2 + index * 2]] = p[3 + index * 2] }
         return values
     }
 
