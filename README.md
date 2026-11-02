@@ -81,13 +81,42 @@ Detailed device management and configuration window:
 
 ## 🎧 Supported Models
 
-| Earbud Model | Support | Verified Features |
+MacMelody supports OnePlus, OPPO, and realme TWS earbuds communicating via the OPOv1 protocol over Bluetooth RFCOMM and BLE.
+
+### OnePlus
+| Model | Status | Features |
 |---|:---:|---|
-| **OnePlus Nord Buds 4 Pro** (`066814`) | 🟢 **Verified** | Battery, ANC (Smart/Deep/Medium/Light), Game Mode, Spatial Audio |
-| **OnePlus Buds 3** (`063C14`) | 🟢 **Verified** | Battery, all ANC levels, EQ presets, Game Mode, In-ear detection |
-| **OnePlus Nord Buds 3 Pro** (`064414`) | 🟢 **Supported** | Battery monitoring, noise modes, low-latency toggle |
-| **realme Buds Air 5** (`062012`) | 🟢 **Supported** | Multi-level ANC, battery levels, realme EQ curves |
-| **realme Buds T300** (`062412`) | 🟢 **Supported** | Noise control (Off / ANC / Transparency), battery |
+| **OnePlus Nord Buds 4 Pro** | 🟢 Verified | Battery, ANC (Smart/Deep/Med/Light), EQ, Spatial Audio, BassWave, Gestures |
+| **OnePlus Buds 3** | 🟢 Verified | Battery, ANC (Smart/Deep/Med/Light), EQ presets, Game Mode, In-ear detection |
+| **OnePlus Buds Pro 3** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
+| **OnePlus Buds Pro 2 / 2R** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
+| **OnePlus Nord Buds 3 / 3 Pro** | 🟡 Experimental | Battery, ANC Tree, EQ, Game Mode, In-ear detection |
+| **OnePlus Nord Buds 2 / 2r** | 🟡 Experimental | Battery, BassWave, Noise Control, EQ, Game Mode |
+| **OnePlus Buds Z2** | 🟡 Experimental | Battery, Noise Control, EQ, Game Mode, In-ear detection |
+| **OnePlus Buds Pro** | 🟡 Experimental | Battery, Noise Control, EQ, Game Mode, In-ear detection |
+
+### OPPO
+| Model | Status | Features |
+|---|:---:|---|
+| **OPPO Enco X2** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
+| **OPPO Enco Air4 Pro** | 🟡 Experimental | Battery, Master EQ, ANC Tree, Dual Connection, In-ear detection |
+| **OPPO Enco Air3 Pro** | 🟡 Experimental | Battery, Master EQ, ANC Tree, Spatial Audio, Dual Connection, In-ear detection |
+| **OPPO Enco Air3** | 🟡 Experimental | Battery, Master EQ, Game Mode, Dual Connection, Gestures |
+| **OPPO Enco Buds2** | 🟡 Experimental | Battery, Master EQ, Game Mode, Gestures |
+| **OPPO Enco Free3** | 🟡 Experimental | Battery, Master EQ, ANC Tree, In-ear detection, Gestures |
+| **OPPO Enco X** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, In-ear detection, Gestures |
+
+### realme
+| Model | Status | Features |
+|---|:---:|---|
+| **realme Buds Air 6 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds Air 6** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds Air 5 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds Air 5** | 🟢 Supported | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds Air 7 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds T310** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
+| **realme Buds T300** | 🟢 Supported | Battery, realme EQ, Noise Control (Off / ANC / Transparency), Game Mode |
+| **realme Buds T110** | 🟡 Experimental | Battery, realme EQ, Game Mode, Gestures |
 
 ---
 

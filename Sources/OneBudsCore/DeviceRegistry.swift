@@ -150,23 +150,285 @@ public enum DeviceRegistry {
                        .wearDetection: .experimental, .deviceInfo: .experimental],
         testedFirmware: [],
         limitations: [
-            "Protocol reference model (S1, S2 tested it over BLE); not tested with OneBuds.",
+            "Protocol reference model (S1, S2 tested it over BLE); not tested with MacMelody.",
             "Reported to offer only battery and wear events (S4 issue #2).",
         ],
         sources: ["S1", "S2", "S3", "S4"],
         evidence: [])
 
-    /// Listed by references as likely compatible. Unknown: diagnostics only, no control session.
-    public static let unknownModels: [DeviceProfile] = [
-        unknown("oneplus-buds-4", .onePlus, "OnePlus Buds 4", productID: "065414", note: "Fully documented by S4 on its own hardware; not tested with OneBuds."),
-        unknown("oneplus-buds-pro-3", .onePlus, "OnePlus Buds Pro 3", productID: "064014", note: nil),
-        unknown("oneplus-buds-pro-2", .onePlus, "OnePlus Buds Pro 2", productID: "062014", note: nil),
-        unknown("oneplus-nord-buds-3", .onePlus, "OnePlus Nord Buds 3", productID: "065014",
-                note: "Uses older noise-control bits: the Buds 4 'Off' value turns ANC on here (S4)."),
-        unknown("oneplus-buds-pro", .onePlus, "OnePlus Buds Pro", productID: "060C14", note: "Uses the legacy 1107 service (S5)."),
+    static let standardSPP = "00001101-0000-1000-8000-00805F9B34FB"
+
+    static let onePlusEQ: [EQPresetOption] = [
+        EQPresetOption(id: 0, name: "Balanced"),
+        EQPresetOption(id: 1, name: "Deep Sea Bass"),
+        EQPresetOption(id: 2, name: "Pure Vocals"),
+        EQPresetOption(id: 3, name: "Bright & Crisp"),
     ]
 
-    static let standardSPP = "00001101-0000-1000-8000-00805F9B34FB"
+    static let dynaudioEQ: [EQPresetOption] = [
+        EQPresetOption(id: 0, name: "Dynaudio Balanced"),
+        EQPresetOption(id: 1, name: "Bold Bass"),
+        EQPresetOption(id: 2, name: "Serenade"),
+        EQPresetOption(id: 3, name: "Dynaudio Clear"),
+    ]
+
+    static let oppoMasterEQ: [EQPresetOption] = [
+        EQPresetOption(id: 0, name: "Original Sound"),
+        EQPresetOption(id: 1, name: "Bass Boost"),
+        EQPresetOption(id: 2, name: "Clear Vocals"),
+    ]
+
+    static let basicNCModes: [NoiseModeOption] = [
+        NoiseModeOption(.off, set: [0x01], read: 0x0008),
+        NoiseModeOption(.transparency, set: [0x04], read: 0x0100),
+        NoiseModeOption(.noiseCancelling(nil), set: [0x02], read: 0x0002),
+    ]
+
+    static let oppoGestures: [UInt8: [UInt8]] = [
+        GestureAction.single.rawValue: [0x00, 0x01],
+        GestureAction.double.rawValue: [0x03, 0x01, 0x05, 0x06, 0x11, 0x00],
+        GestureAction.triple.rawValue: [0x03, 0x05, 0x06, 0x11, 0x00],
+        GestureAction.hold.rawValue: [0x08, 0x03, 0x00],
+        GestureAction.slide.rawValue: [0x07, 0x0A, 0x00],
+    ]
+
+    // MARK: - Expanded OnePlus Profiles
+
+    public static let onePlusBudsPro3 = DeviceProfile(
+        id: "oneplus-buds-pro-3", manufacturer: .onePlus, model: "OnePlus Buds Pro 3", displayName: "OnePlus Buds Pro 3",
+        bluetoothNames: ["OnePlus Buds Pro 3", "Buds Pro 3"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["064014"], noiseModes: ncTreeModes, equalizerPresets: dynaudioEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x11, 0x18, 0x1B], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Compatible with OPOv1 protocol; experimental MacMelody profile."], sources: ["S4", "S5"], evidence: [])
+
+    public static let onePlusBudsPro2 = DeviceProfile(
+        id: "oneplus-buds-pro-2", manufacturer: .onePlus, model: "OnePlus Buds Pro 2", displayName: "OnePlus Buds Pro 2",
+        bluetoothNames: ["OnePlus Buds Pro 2", "OnePlus Buds Pro 2R", "Buds Pro 2", "Buds Pro 2R"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["062014", "062414"], noiseModes: ncTreeModes, equalizerPresets: dynaudioEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x11, 0x18, 0x1B], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Compatible with OPOv1 protocol; experimental MacMelody profile."], sources: ["S4", "S5"], evidence: [])
+
+    public static let nordBuds3 = DeviceProfile(
+        id: "oneplus-nord-buds-3", manufacturer: .onePlus, model: "OnePlus Nord Buds 3", displayName: "OnePlus Nord Buds 3",
+        bluetoothNames: ["OnePlus Nord Buds 3", "Nord Buds 3"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["065014"], noiseModes: ncTreeModes, equalizerPresets: onePlusEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Compatible with OPOv1 protocol; experimental MacMelody profile."], sources: ["S4", "S5"], evidence: [])
+
+    public static let nordBuds2 = DeviceProfile(
+        id: "oneplus-nord-buds-2", manufacturer: .onePlus, model: "OnePlus Nord Buds 2", displayName: "OnePlus Nord Buds 2",
+        bluetoothNames: ["OnePlus Nord Buds 2", "OnePlus Nord Buds 2r", "Nord Buds 2", "Nord Buds 2r"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["062C14", "062814"], noiseModes: basicNCModes, equalizerPresets: onePlusEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x0C, 0x11], gameModeFeatureID: 0x06,
+                           bassWaveFeatureID: 0x0C, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .bassWave: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Core ANC, EQ, and BassWave supported."], sources: ["S4", "S5"], evidence: [])
+
+    public static let onePlusBudsZ2 = DeviceProfile(
+        id: "oneplus-buds-z2", manufacturer: .onePlus, model: "OnePlus Buds Z2", displayName: "OnePlus Buds Z2",
+        bluetoothNames: ["OnePlus Buds Z2", "Buds Z2"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["060414"], noiseModes: basicNCModes, equalizerPresets: onePlusEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Core ANC and low-latency mode supported."], sources: ["S4", "S5"], evidence: [])
+
+    public static let onePlusBudsPro = DeviceProfile(
+        id: "oneplus-buds-pro", manufacturer: .onePlus, model: "OnePlus Buds Pro", displayName: "OnePlus Buds Pro",
+        bluetoothNames: ["OnePlus Buds Pro", "Buds Pro"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService, standardSPP], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["060C14", "060814"], noiseModes: ncTreeModes, equalizerPresets: onePlusEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Legacy 1107 service fallback included."], sources: ["S5"], evidence: [])
+
+    // MARK: - Expanded OPPO Profiles
+
+    public static let oppoEncoX2 = DeviceProfile(
+        id: "oppo-enco-x2", manufacturer: .oppo, model: "OPPO Enco X2", displayName: "OPPO Enco X2",
+        bluetoothNames: ["OPPO Enco X2", "Enco X2"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["060C10", "060E10"], noiseModes: ncTreeModes, equalizerPresets: dynaudioEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Flagship Dynaudio dual-driver ANC model; experimental profile."], sources: ["S4", "S5", "S12"], evidence: [])
+
+    public static let oppoEncoAir4Pro = DeviceProfile(
+        id: "oppo-enco-air-4-pro", manufacturer: .oppo, model: "OPPO Enco Air4 Pro", displayName: "OPPO Enco Air4 Pro",
+        bluetoothNames: ["OPPO Enco Air4 Pro", "OPPO Enco Air 4 Pro", "Enco Air4 Pro", "Enco Air 4 Pro"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["063010"], noiseModes: ncTreeModes, equalizerPresets: oppoMasterEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["OPO protocol ANC tree supported."], sources: ["S4", "S5"], evidence: [])
+
+    public static let oppoEncoAir3Pro = DeviceProfile(
+        id: "oppo-enco-air-3-pro", manufacturer: .oppo, model: "OPPO Enco Air3 Pro", displayName: "OPPO Enco Air3 Pro",
+        bluetoothNames: ["OPPO Enco Air3 Pro", "OPPO Enco Air 3 Pro", "Enco Air3 Pro", "Enco Air 3 Pro"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["061810", "061C10"], noiseModes: ncTreeModes, equalizerPresets: oppoMasterEQ,
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x0B, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x0B, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .dualConnection: .experimental, .spatialAudio: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["LDAC & Bamboo fiber ANC model; experimental profile."], sources: ["S4", "S5", "S12"], evidence: [])
+
+    public static let oppoEncoAir3 = DeviceProfile(
+        id: "oppo-enco-air-3", manufacturer: .oppo, model: "OPPO Enco Air3", displayName: "OPPO Enco Air3",
+        bluetoothNames: ["OPPO Enco Air3", "OPPO Enco Air 3", "Enco Air3", "Enco Air 3"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["061410"], noiseModes: [], equalizerPresets: oppoMasterEQ,
+                           featureStatusIDs: [0x06, 0x11], gameModeFeatureID: 0x06,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .dualConnection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Semi-in-ear: battery, EQ, and game mode supported."], sources: ["S4", "S5"], evidence: [])
+
+    public static let oppoEncoBuds2 = DeviceProfile(
+        id: "oppo-enco-buds-2", manufacturer: .oppo, model: "OPPO Enco Buds2", displayName: "OPPO Enco Buds2",
+        bluetoothNames: ["OPPO Enco Buds2", "OPPO Enco Buds 2", "Enco Buds2", "Enco Buds 2"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["061010", "061210"], noiseModes: [], equalizerPresets: oppoMasterEQ,
+                           featureStatusIDs: [0x06], gameModeFeatureID: 0x06, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Enco Live stereo sound effects, battery, and low-latency mode."], sources: ["S4", "S5"], evidence: [])
+
+    public static let oppoEncoFree3 = DeviceProfile(
+        id: "oppo-enco-free-3", manufacturer: .oppo, model: "OPPO Enco Free3", displayName: "OPPO Enco Free3",
+        bluetoothNames: ["OPPO Enco Free3", "OPPO Enco Free 3", "Enco Free3"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["061A10"], noiseModes: ncTreeModes, equalizerPresets: oppoMasterEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Bamboo diaphragm ANC model."], sources: ["S4", "S5"], evidence: [])
+
+    public static let oppoEncoX = DeviceProfile(
+        id: "oppo-enco-x", manufacturer: .oppo, model: "OPPO Enco X", displayName: "OPPO Enco X",
+        bluetoothNames: ["OPPO Enco X", "Enco X"], transports: [.rfcomm, .ble], rfcommServiceUUIDs: [opoService], ble: opoBLE,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["060410"], noiseModes: ncTreeModes, equalizerPresets: dynaudioEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06,
+                           wearDetectionFeatureID: 0x04, gestureFunctions: oppoGestures),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gameMode: .experimental,
+                       .wearDetection: .experimental, .deviceInfo: .experimental, .gestures: .experimental],
+        testedFirmware: [], limitations: ["Dynaudio co-created ANC flagship."], sources: ["S4", "S5"], evidence: [])
+
+    // MARK: - Expanded realme Profiles
+
+    public static let realmeBudsAir6Pro = DeviceProfile(
+        id: "realme-buds-air-6-pro", manufacturer: .realme, model: "realme Buds Air 6 Pro", displayName: "realme Buds Air 6 Pro",
+        bluetoothNames: ["realme Buds Air 6 Pro", "realme Buds Air6 Pro", "Buds Air 6 Pro", "Buds Air6 Pro"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["063012"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5", "S15"], evidence: [])
+
+    public static let realmeBudsAir6 = DeviceProfile(
+        id: "realme-buds-air-6", manufacturer: .realme, model: "realme Buds Air 6", displayName: "realme Buds Air 6",
+        bluetoothNames: ["realme Buds Air 6", "realme Buds Air6", "Buds Air 6", "Buds Air6"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["063412"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5"], evidence: [])
+
+    public static let realmeBudsAir5Pro = DeviceProfile(
+        id: "realme-buds-air-5-pro", manufacturer: .realme, model: "realme Buds Air 5 Pro", displayName: "realme Buds Air 5 Pro",
+        bluetoothNames: ["realme Buds Air 5 Pro", "realme Buds Air5 Pro", "Buds Air 5 Pro", "Buds Air5 Pro"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["061C12"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5"], evidence: [])
+
+    public static let realmeBudsAir7Pro = DeviceProfile(
+        id: "realme-buds-air-7-pro", manufacturer: .realme, model: "realme Buds Air 7 Pro", displayName: "realme Buds Air 7 Pro",
+        bluetoothNames: ["realme Buds Air 7 Pro", "realme Buds Air7 Pro", "Buds Air 7 Pro", "Buds Air7 Pro"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["064C12"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4"], evidence: [])
+
+    public static let realmeBudsT310 = DeviceProfile(
+        id: "realme-buds-t310", manufacturer: .realme, model: "realme Buds T310", displayName: "realme Buds T310",
+        bluetoothNames: ["realme Buds T310", "Buds T310"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["063C12"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x06, 0x11], gameModeFeatureID: 0x06,
+                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5"], evidence: [])
+
+    public static let realmeBudsT110 = DeviceProfile(
+        id: "realme-buds-t110", manufacturer: .realme, model: "realme Buds T110", displayName: "realme Buds T110",
+        bluetoothNames: ["realme Buds T110", "Buds T110"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        protocolKind: .opoV1,
+        opo: OPOParameters(productIDs: ["063812"], noiseModes: [], equalizerPresets: realmeEQ,
+                           featureStatusIDs: [0x06], gameModeFeatureID: 0x06, gestureFunctions: realmeGestures,
+                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        status: .experimental,
+        capabilities: [.battery: .experimental, .equalizer: .experimental, .gestures: .experimental,
+                       .gameMode: .experimental, .deviceInfo: .experimental],
+        testedFirmware: [], limitations: realmeLimitations, sources: ["S4"], evidence: [])
 
     /// realme TL-family noise values: the written value is also the reported value (realme Link data
     /// via S4; verified by S12 on realme Buds T500 Pro, by S15 on Air6 Pro/T200). Plain ANC and Deep
@@ -194,8 +456,8 @@ public enum DeviceRegistry {
     ]
 
     static let realmeLimitations = [
-        "Experimental: built from realme Link data and other realme models' hardware evidence; not yet tested on this model with OneBuds.",
-        "realme reports power saving as feature 0x05; OneBuds never writes it.",
+        "Experimental: built from realme Link data and other realme models' hardware evidence; not yet tested on this model with MacMelody.",
+        "realme reports power saving as feature 0x05; MacMelody never writes it.",
         "If the 079A service is absent, the standard serial port (0x1101) is tried; the product id must still match.",
     ]
 
@@ -237,15 +499,48 @@ public enum DeviceRegistry {
         limitations: ["Uses realme's older realme Link protocol (protocolType 2), which no source documents. Needs an Android Bluetooth capture to add."],
         sources: ["S5", "S10"], evidence: [])
 
-    static let realmeUnknownModels: [DeviceProfile] = [
-        unknown("realme-buds-air-5-pro", .realme, "realme Buds Air 5 Pro", productID: "061C12", note: nil),
-        unknown("realme-buds-air-6", .realme, "realme Buds Air6", productID: "063412", note: nil),
-        unknown("realme-buds-air-6-pro", .realme, "realme Buds Air6 Pro", productID: "063012", note: "Gadgetbridge connects it over standard SPP (S15)."),
-        unknown("realme-buds-air-7-pro", .realme, "realme Buds Air7 Pro", productID: "064C12", note: "Owner-confirmed in QuickBuds (S4)."),
-        unknown("realme-buds-t310", .realme, "realme Buds T310", productID: "063C12", note: nil),
+    public static let unknownModels: [DeviceProfile] = [
+        unknown("oneplus-buds-4", .onePlus, "OnePlus Buds 4", productID: "065414", note: "Fully documented by S4 on its own hardware; not tested with MacMelody."),
     ]
 
-    public static let all: [DeviceProfile] = [nordBuds4Pro, onePlusBuds3, nordBuds3Pro, realmeBudsAir5, realmeBudsT300]
+    static let realmeUnknownModels: [DeviceProfile] = [
+        unknown("realme-buds-t100", .realme, "realme Buds T100", productID: "062812", note: nil),
+    ]
+
+    public static let onePlusModels: [DeviceProfile] = [
+        nordBuds4Pro,
+        onePlusBuds3,
+        nordBuds3Pro,
+        onePlusBudsPro3,
+        onePlusBudsPro2,
+        nordBuds3,
+        nordBuds2,
+        onePlusBudsZ2,
+        onePlusBudsPro,
+    ]
+
+    public static let oppoModels: [DeviceProfile] = [
+        oppoEncoX2,
+        oppoEncoAir4Pro,
+        oppoEncoAir3Pro,
+        oppoEncoAir3,
+        oppoEncoBuds2,
+        oppoEncoFree3,
+        oppoEncoX,
+    ]
+
+    public static let realmeModels: [DeviceProfile] = [
+        realmeBudsAir6Pro,
+        realmeBudsAir6,
+        realmeBudsAir5Pro,
+        realmeBudsAir7Pro,
+        realmeBudsT310,
+        realmeBudsT110,
+        realmeBudsAir5,
+        realmeBudsT300,
+    ]
+
+    public static let all: [DeviceProfile] = onePlusModels + oppoModels + realmeModels
         + unknownModels + realmeUnknownModels + [realmeBudsWireless2]
 
     /// Selects a profile by exact Bluetooth name first, trimmed possessive prefix (e.g. "Omraj's ..."), then by product id.
