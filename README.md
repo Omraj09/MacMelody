@@ -22,7 +22,10 @@ Experience seamless audio control on your Mac without opening mobile apps or clo
 
 <br/><br/>
 
-<img src="Documentation/Screenshots/window-overview-dark.png" width="780" alt="MacMelody App Interface" style="border-radius: 14px; box-shadow: 0 12px 36px rgba(0,0,0,0.3);">
+<p align="center">
+  <img src="Documentation/Screenshots/popover.png" width="320" alt="MacMelody Menu Bar Control Panel" style="border-radius: 18px; vertical-align: top; margin-right: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.25);">
+  <img src="Documentation/Screenshots/window-overview.png" width="520" alt="MacMelody Main Overview Window" style="border-radius: 14px; vertical-align: top; box-shadow: 0 12px 36px rgba(0,0,0,0.25);">
+</p>
 
 </div>
 
