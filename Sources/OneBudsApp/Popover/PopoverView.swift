@@ -51,8 +51,6 @@ struct PopoverView: View {
             )
         }
         .clipShape(outerShape)
-        .shadow(color: .black.opacity(colorScheme == .dark ? 0.40 : 0.15), radius: 16, y: 6)
-        .padding(6)
         .background(WindowTransparentBackground())
         .animateState(value: manager.connection.isConnected)
         .animateState(value: manager.lastError)
