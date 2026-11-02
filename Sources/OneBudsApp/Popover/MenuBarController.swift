@@ -155,7 +155,7 @@ final class MenuBarController: NSObject {
 
         if animate {
             NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.24
+                context.duration = 0.22
                 context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
                 context.allowsImplicitAnimation = true
                 panel.animator().setFrame(newFrame, display: true)
@@ -285,7 +285,6 @@ final class MenuBarPopoverPanel: NSPanel {
 final class MenuBarHostingView<Content: View>: NSHostingView<Content> {
     var onFittingSizeChange: ((CGSize) -> Void)?
     private var lastHeight: CGFloat = 0
-    private var resizeTask: Task<Void, Never>?
 
     override func layout() {
         super.layout()
@@ -293,17 +292,9 @@ final class MenuBarHostingView<Content: View>: NSHostingView<Content> {
         guard size.width > 0, size.height > 0 else { return }
         guard abs(size.height - lastHeight) > 1.5 else { return }
 
-        resizeTask?.cancel()
-        resizeTask = Task { @MainActor [weak self] in
-            // Small debounce to let sub-frame interpolations settle into target size
-            try? await Task.sleep(nanoseconds: 16_000_000) // ~1 frame (16ms)
-            guard !Task.isCancelled, let self else { return }
-            let finalSize = self.fittingSize
-            if abs(finalSize.height - self.lastHeight) > 1.0 {
-                self.lastHeight = finalSize.height
-                self.onFittingSizeChange?(finalSize)
-            }
-        }
+        // Update immediately in sync with SwiftUI's layout transition
+        lastHeight = size.height
+        onFittingSizeChange?(size)
     }
 
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }

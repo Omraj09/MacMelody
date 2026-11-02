@@ -98,7 +98,7 @@ final class BudsViewModel: ObservableObject {
     // MARK: - Hardware Command Hooks (Connect your BLE / RFCOMM writer here)
 
     func setNoiseMode(_ mode: NoiseControlMode) {
-        withAnimation(.easeInOut(duration: 0.24)) {
+        withAnimation(.easeInOut(duration: 0.22)) {
             noiseMode = mode
         }
         // Send ANC mode packet to buds
@@ -123,7 +123,7 @@ final class BudsViewModel: ObservableObject {
     }
 
     func setANCDepth(_ depth: ANCDepth) {
-        withAnimation(.spring(response: 0.36, dampingFraction: 0.76)) {
+        withAnimation(.easeInOut(duration: 0.18)) {
             ancDepth = depth
         }
         // Send ANC depth packet to buds
@@ -141,7 +141,7 @@ final class BudsViewModel: ObservableObject {
     }
 
     func toggleGameMode() {
-        withAnimation(.spring(response: 0.38, dampingFraction: 0.68)) {
+        withAnimation(.easeInOut(duration: 0.20)) {
             isGameMode.toggle()
         }
         // Send low-latency Game Mode packet to buds

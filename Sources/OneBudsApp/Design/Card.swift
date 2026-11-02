@@ -9,5 +9,6 @@ struct Card<Content: View>: View {
             .padding(Theme.Spacing.m)
             .frame(maxWidth: .infinity, alignment: .leading)
             .surface(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card, style: .continuous))
     }
 }
