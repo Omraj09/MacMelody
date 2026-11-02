@@ -13,6 +13,9 @@ struct SettingsView: View {
             GeneralSettingsPane()
                 .tabItem { Label(SettingsTab.general.title, systemImage: SettingsTab.general.systemImage) }
                 .tag(SettingsTab.general)
+            PanelCustomizationPane()
+                .tabItem { Label(SettingsTab.controlPanel.title, systemImage: SettingsTab.controlPanel.systemImage) }
+                .tag(SettingsTab.controlPanel)
             AppearanceSettingsPane()
                 .tabItem { Label(SettingsTab.appearance.title, systemImage: SettingsTab.appearance.systemImage) }
                 .tag(SettingsTab.appearance)

@@ -45,6 +45,27 @@ final class AppSettings {
         didSet { defaults.set(animateCardModel, forKey: "animateCardModel") }
     }
 
+    /// Ordered list of modules in the menu bar control panel.
+    var panelModuleOrder: [PanelModule] {
+        didSet {
+            let ids = panelModuleOrder.map(\.rawValue)
+            defaults.set(ids, forKey: "panelModuleOrder")
+        }
+    }
+
+    /// Set of enabled modules in the menu bar control panel.
+    var enabledPanelModules: Set<PanelModule> {
+        didSet {
+            let ids = Array(enabledPanelModules.map(\.rawValue))
+            defaults.set(ids, forKey: "enabledPanelModules")
+        }
+    }
+
+    /// Layout orientation and style for the control panel.
+    var panelOrientation: PanelOrientation {
+        didSet { defaults.set(panelOrientation.rawValue, forKey: "panelOrientation") }
+    }
+
     private(set) var demoMode: Bool {
         didSet { defaults.set(demoMode, forKey: "demoMode") }
     }
@@ -67,10 +88,57 @@ final class AppSettings {
         cardDuration = CardDuration(rawValue: defaults.string(forKey: "cardDuration") ?? "") ?? .standard
         cardArtworkStyle = CardArtworkStyle(rawValue: defaults.string(forKey: "cardArtworkStyle") ?? "") ?? .automatic
         animateCardModel = defaults.object(forKey: "animateCardModel") as? Bool ?? true
+
+        // Panel customization
+        if let savedOrder = defaults.stringArray(forKey: "panelModuleOrder") {
+            var order = savedOrder.compactMap { PanelModule(rawValue: $0) }
+            for m in PanelModule.allCases where !order.contains(m) {
+                order.append(m)
+            }
+            panelModuleOrder = order.isEmpty ? PanelModule.allCases : order
+        } else {
+            panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection, .spatialAudio]
+        }
+
+        if let savedEnabled = defaults.stringArray(forKey: "enabledPanelModules") {
+            enabledPanelModules = Set(savedEnabled.compactMap { PanelModule(rawValue: $0) })
+        } else {
+            enabledPanelModules = [.battery, .noiseControl, .gameMode, .equalizer]
+        }
+
+        panelOrientation = PanelOrientation(rawValue: defaults.string(forKey: "panelOrientation") ?? "") ?? .stacked
+
         demoMode = defaults.bool(forKey: "demoMode")
         demoModelID = defaults.string(forKey: "demoModelID") ?? DeviceRegistry.onePlusBuds3.id
     }
 
     func setDemoMode(_ value: Bool) { demoMode = value }
     func setDemoModel(_ id: String) { demoModelID = id }
+
+    func isModuleEnabled(_ module: PanelModule) -> Bool {
+        enabledPanelModules.contains(module)
+    }
+
+    func toggleModule(_ module: PanelModule) {
+        if enabledPanelModules.contains(module) {
+            // Keep at least one module enabled
+            if enabledPanelModules.count > 1 {
+                enabledPanelModules.remove(module)
+            }
+        } else {
+            enabledPanelModules.insert(module)
+        }
+    }
+
+    func moveModule(at index: Int, up: Bool) {
+        let targetIndex = up ? index - 1 : index + 1
+        guard targetIndex >= 0 && targetIndex < panelModuleOrder.count else { return }
+        panelModuleOrder.swapAt(index, targetIndex)
+    }
+
+    func resetPanelCustomization() {
+        panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection, .spatialAudio]
+        enabledPanelModules = [.battery, .noiseControl, .gameMode, .equalizer]
+        panelOrientation = .stacked
+    }
 }

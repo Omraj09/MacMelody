@@ -1,12 +1,13 @@
 /// Main-window destinations, grouped as in the sidebar.
 enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
     case overview, noiseControl, equalizer, gestures
-    case generalSettings, appearanceSettings, menuBarSettings, connectionCardSettings, demoSettings, aboutSettings
+    case generalSettings, panelCustomization, appearanceSettings, menuBarSettings, connectionCardSettings, demoSettings, aboutSettings
     case deviceInfo, compatibility, diagnostics
 
     static let earbuds: [SidebarItem] = [.overview, .noiseControl, .equalizer, .gestures]
     static let settings: [SidebarItem] = [
         .generalSettings,
+        .panelCustomization,
         .appearanceSettings,
         .menuBarSettings,
         .connectionCardSettings,
@@ -24,6 +25,7 @@ enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
         case .equalizer: "Equalizer"
         case .gestures: "Touch Gestures"
         case .generalSettings: "General"
+        case .panelCustomization: "Control Panel"
         case .appearanceSettings: "Appearance"
         case .menuBarSettings: "Menu Bar"
         case .connectionCardSettings: "Connection Card"
@@ -42,6 +44,7 @@ enum SidebarItem: String, CaseIterable, Identifiable, Hashable {
         case .equalizer: "slider.vertical.3"
         case .gestures: "hand.tap"
         case .generalSettings: "gearshape"
+        case .panelCustomization: "slider.horizontal.2.square.on.square"
         case .appearanceSettings: "paintbrush"
         case .menuBarSettings: "menubar.rectangle"
         case .connectionCardSettings: "rectangle.on.rectangle"

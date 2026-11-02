@@ -11,6 +11,7 @@ struct DetailView: View {
         case .equalizer: EqualizerView()
         case .gestures: GesturesView()
         case .generalSettings: GeneralSettingsPane()
+        case .panelCustomization: PanelCustomizationPane()
         case .appearanceSettings: AppearanceSettingsPane()
         case .menuBarSettings: MenuBarSettingsPane()
         case .connectionCardSettings: ConnectionCardSettingsPane()

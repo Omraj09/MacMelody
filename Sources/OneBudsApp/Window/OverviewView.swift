@@ -2,6 +2,7 @@ import OneBudsCore
 import SwiftUI
 
 struct OverviewView: View {
+    @Environment(AppModel.self) private var model
     @Environment(DeviceManager.self) private var manager
 
     var body: some View {
@@ -33,6 +34,24 @@ struct OverviewView: View {
                     }
                 }
                 FeatureTogglesSection()
+
+                Section {
+                    Button {
+                        model.selection = .panelCustomization
+                    } label: {
+                        HStack {
+                            Label("Customize Menu Bar Panel…", systemImage: "slider.horizontal.2.square.on.square")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } footer: {
+                    Text("Configure which controls appear in the menu bar panel and customize their layout orientation.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if let error = manager.lastError {
