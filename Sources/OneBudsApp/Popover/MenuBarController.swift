@@ -83,34 +83,75 @@ final class MenuBarController: NSObject {
         }
     }
 
+    private func setupPanel() -> MenuBarPopoverPanel {
+        let panel = MenuBarPopoverPanel(model: model, manager: manager, settings: settings) { [weak self] in
+            self?.hidePopover()
+        }
+        if let hostingView = panel.contentView as? MenuBarHostingView<AnyView> {
+            hostingView.onFittingSizeChange = { [weak self] newSize in
+                self?.updatePanelFrame(for: newSize, animate: true)
+            }
+        }
+        return panel
+    }
+
     func showPopover() {
         guard let button = statusItem?.button, let buttonWindow = button.window else { return }
         let screen = buttonWindow.screen ?? NSScreen.main ?? NSScreen.screens.first!
 
-        let panel: MenuBarPopoverPanel
-        if let existing = self.panel {
-            panel = existing
-        } else {
-            let created = MenuBarPopoverPanel(model: model, manager: manager, settings: settings) { [weak self] in
-                self?.hidePopover()
-            }
-            self.panel = created
-            panel = created
-        }
+        let panel = self.panel ?? setupPanel()
+        self.panel = panel
 
-        let fittingSize = panel.contentView?.fittingSize ?? CGSize(width: Theme.Size.popoverWidth + 32, height: 440)
+        panel.layoutIfNeeded()
+        let size = panel.contentView?.fittingSize ?? CGSize(width: Theme.Size.popoverWidth, height: 420)
         let buttonFrame = buttonWindow.convertToScreen(button.bounds)
 
-        var x = buttonFrame.midX - (fittingSize.width / 2)
+        var x = buttonFrame.midX - (size.width / 2)
         let minX = screen.visibleFrame.minX + 8
-        let maxX = screen.visibleFrame.maxX - fittingSize.width - 8
+        let maxX = screen.visibleFrame.maxX - size.width - 8
         x = max(minX, min(x, maxX))
 
-        let y = buttonFrame.minY - fittingSize.height + 10 // Inset to sit right under menu bar
-        panel.setFrame(NSRect(x: x, y: y, width: fittingSize.width, height: fittingSize.height), display: true)
+        let top = buttonFrame.minY - 4
+        let y = top - size.height
+
+        panel.setFrame(NSRect(x: x, y: y, width: size.width, height: size.height), display: true)
+        panel.invalidateShadow()
         panel.makeKeyAndOrderFront(nil)
 
         startEventMonitors()
+    }
+
+    func updatePanelFrame(for size: CGSize, animate: Bool = true) {
+        guard let panel, panel.isVisible, let button = statusItem?.button, let buttonWindow = button.window else { return }
+        let screen = buttonWindow.screen ?? NSScreen.main ?? NSScreen.screens.first!
+        let buttonFrame = buttonWindow.convertToScreen(button.bounds)
+
+        var x = buttonFrame.midX - (size.width / 2)
+        let minX = screen.visibleFrame.minX + 8
+        let maxX = screen.visibleFrame.maxX - size.width - 8
+        x = max(minX, min(x, maxX))
+
+        let top = buttonFrame.minY - 4
+        let y = top - size.height
+
+        let newFrame = NSRect(x: x, y: y, width: size.width, height: size.height)
+        guard panel.frame != newFrame else { return }
+
+        if animate {
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.22
+                context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                context.allowsImplicitAnimation = true
+                panel.animator().setFrame(newFrame, display: true)
+            } completionHandler: {
+                MainActor.assumeIsolated {
+                    panel.invalidateShadow()
+                }
+            }
+        } else {
+            panel.setFrame(newFrame, display: true)
+            panel.invalidateShadow()
+        }
     }
 
     func hidePopover() {
@@ -121,7 +162,15 @@ final class MenuBarController: NSObject {
     private func startEventMonitors() {
         stopEventMonitors()
         globalEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
-            self?.hidePopover()
+            guard let self, let button = self.statusItem?.button, let buttonWindow = button.window else {
+                self?.hidePopover()
+                return
+            }
+            let clickLocation = NSEvent.mouseLocation
+            let buttonFrame = buttonWindow.convertToScreen(button.bounds)
+            if !buttonFrame.contains(clickLocation) {
+                self.hidePopover()
+            }
         }
         localEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             if event.keyCode == 53 { // Escape
@@ -158,7 +207,7 @@ final class MenuBarPopoverPanel: NSPanel {
         )
         self.isOpaque = false
         self.backgroundColor = .clear
-        self.hasShadow = false
+        self.hasShadow = true
         self.level = .popUpMenu
         self.isFloatingPanel = true
         self.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
@@ -182,6 +231,18 @@ final class MenuBarPopoverPanel: NSPanel {
     }
 }
 
-private final class MenuBarHostingView<Content: View>: NSHostingView<Content> {
+final class MenuBarHostingView<Content: View>: NSHostingView<Content> {
+    var onFittingSizeChange: ((CGSize) -> Void)?
+    private var lastHeight: CGFloat = 0
+
+    override func layout() {
+        super.layout()
+        let size = fittingSize
+        if size.width > 0 && size.height > 0 && abs(size.height - lastHeight) > 1 {
+            lastHeight = size.height
+            onFittingSizeChange?(size)
+        }
+    }
+
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
 }
