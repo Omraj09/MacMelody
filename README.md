@@ -156,7 +156,7 @@ MacMelody communicates natively with **35+ models** across **OnePlus**, **OPPO**
 | **Realme Buds Air 6** | 🟡 Not Verified | Battery, 50dB ANC Tree, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
 | **Realme Buds Air 5 Pro** | 🟡 Not Verified | Battery, 50dB ANC Tree, Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
 | **Realme Buds Air 5** | 🟡 Not Verified | Battery, Multi-level ANC, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
-| **Realme Buds T310** | 🟡 Not Verified | Battery, 46dB Hybrid ANC, 360° Spatial Effect, Dual Connection, Gestures |
+| **Realme Buds T310** | 🟢 Verified | Battery, 46dB Hybrid ANC, 360° Spatial Effect, Dual Connection, Gestures |
 | **Realme Buds T300** | 🟡 Not Verified | Battery, 30dB Core ANC, 360° Spatial Effect, Dual Connection, Gestures |
 | **Realme Buds T200** | 🟡 Not Verified | Battery, 32dB Core ANC, Dynamic Bass EQ, Low Latency, Gestures |
 | **Realme Buds T200x** | 🟡 Not Verified | Battery, 25dB Core ANC, Dynamic Bass EQ, Low Latency, Gestures |
