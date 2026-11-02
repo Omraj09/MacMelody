@@ -81,42 +81,62 @@ Detailed device management and configuration window:
 
 ## 🎧 Supported Models
 
-MacMelody supports OnePlus, OPPO, and realme TWS earbuds communicating via the OPOv1 protocol over Bluetooth RFCOMM and BLE.
+MacMelody communicates natively with OnePlus, OPPO, and realme TWS earbuds via the OPOv1 protocol over Bluetooth RFCOMM and BLE.
 
 ### OnePlus
-| Model | Status | Features |
+| Model | Status | Tailored Features |
 |---|:---:|---|
-| **OnePlus Nord Buds 4 Pro** | 🟢 Verified | Battery, ANC (Smart/Deep/Med/Light), EQ, Spatial Audio, BassWave, Gestures |
-| **OnePlus Buds 3** | 🟢 Verified | Battery, ANC (Smart/Deep/Med/Light), EQ presets, Game Mode, In-ear detection |
-| **OnePlus Buds Pro 3** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
-| **OnePlus Buds Pro 2 / 2R** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
-| **OnePlus Nord Buds 3 / 3 Pro** | 🟡 Experimental | Battery, ANC Tree, EQ, Game Mode, In-ear detection |
-| **OnePlus Nord Buds 2 / 2r** | 🟡 Experimental | Battery, BassWave, Noise Control, EQ, Game Mode |
-| **OnePlus Buds Z2** | 🟡 Experimental | Battery, Noise Control, EQ, Game Mode, In-ear detection |
-| **OnePlus Buds Pro** | 🟡 Experimental | Battery, Noise Control, EQ, Game Mode, In-ear detection |
+| **OnePlus Nord Buds 4 Pro** | 🟢 Verified | Battery, ANC Tree (Smart/Deep/Med/Light), EQ, Spatial Audio, BassWave, Gestures |
+| **OnePlus Buds 3** | 🟢 Verified | Battery, ANC Tree (Smart/Deep/Med/Light), EQ Presets, Game Mode, In-Ear Detection |
+| **OnePlus Buds Pro 3** | 🟡 Not Verified | Battery, Dynaudio EQ, 50dB Adaptive ANC, Spatial Audio, Dual Connection, Stem Gestures |
+| **OnePlus Buds Pro 2 / 2R** | 🟡 Not Verified | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
+| **OnePlus Buds 4** | 🟡 Not Verified | Battery, ANC Tree, Master EQ, Dual Connection, In-Ear Detection, Gestures |
+| **OnePlus Nord Buds 4** | 🟡 Not Verified | Battery, 48dB ANC Tree, BassWave, Dual Connection, In-Ear Detection, Gestures |
+| **OnePlus Nord Buds 3 Pro** | 🟡 Not Verified | Battery, 49dB ANC Tree, BassWave, Dual Connection, In-Ear Detection, Gestures |
+| **OnePlus Nord Buds 3** | 🟡 Not Verified | Battery, 32dB ANC Tree, BassWave, Dual Connection, In-Ear Detection, Gestures |
+| **OnePlus Nord Buds 3r** | 🟡 Not Verified | Battery, Master EQ, BassWave, Dual Connection, Gestures *(Non-ANC)* |
+| **OnePlus Nord Buds 2** | 🟡 Not Verified | Battery, Core ANC, BassWave, In-Ear Detection, Master EQ, Gestures |
+| **OnePlus Nord Buds 2r** | 🟡 Not Verified | Battery, Master EQ, BassWave, Game Mode, Gestures *(Non-ANC)* |
+| **OnePlus Nord Buds** | 🟡 Not Verified | Battery, Sound Master EQ, Ultra-Low Latency, Gestures *(Non-ANC)* |
+| **OnePlus Buds Z2** | 🟡 Not Verified | Battery, Core ANC, In-Ear Detection, Master EQ, Gestures |
+| **OnePlus Buds Pro** | 🟡 Not Verified | Battery, ANC Tree, In-Ear Detection, Master EQ, Gestures |
 
 ### OPPO
-| Model | Status | Features |
+| Model | Status | Tailored Features |
 |---|:---:|---|
-| **OPPO Enco X2** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
-| **OPPO Enco Air4 Pro** | 🟡 Experimental | Battery, Master EQ, ANC Tree, Dual Connection, In-ear detection |
-| **OPPO Enco Air3 Pro** | 🟡 Experimental | Battery, Master EQ, ANC Tree, Spatial Audio, Dual Connection, In-ear detection |
-| **OPPO Enco Air3** | 🟡 Experimental | Battery, Master EQ, Game Mode, Dual Connection, Gestures |
-| **OPPO Enco Buds2** | 🟡 Experimental | Battery, Master EQ, Game Mode, Gestures |
-| **OPPO Enco Free3** | 🟡 Experimental | Battery, Master EQ, ANC Tree, In-ear detection, Gestures |
-| **OPPO Enco X** | 🟡 Experimental | Battery, Dynaudio EQ, ANC Tree, In-ear detection, Gestures |
+| **OPPO Enco X4** | 🟡 Not Verified | Battery, Dynaudio EQ, 55dB ANC Tree, Spatial Audio, Dual Connection, Stem Gestures |
+| **OPPO Enco X2** | 🟡 Not Verified | Battery, Dynaudio EQ, ANC Tree, Spatial Audio, Dual Connection, Gestures |
+| **OPPO Enco Air5 Pro** | 🟡 Not Verified | Battery, 55dB ANC Tree, Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
+| **OPPO Enco Air5** | 🟡 Not Verified | Battery, Master EQ, Dual Connection, Gestures *(Semi-in-ear / Non-ANC)* |
+| **OPPO Enco Air4 Pro** | 🟡 Not Verified | Battery, 49dB ANC Tree, Master EQ, Dual Connection, In-Ear Detection, Gestures |
+| **OPPO Enco Air3 Pro** | 🟡 Not Verified | Battery, Bamboo Driver ANC Tree, Alive Audio (Spatial), Dual Connection, Gestures |
+| **OPPO Enco Air3** | 🟡 Not Verified | Battery, Master EQ, Dual Connection, Gestures *(Semi-in-ear / Non-ANC)* |
+| **OPPO Enco Air2 Pro** | 🟡 Not Verified | Battery, 28dB Core ANC, In-Ear Detection, Master EQ, Gestures |
+| **OPPO Enco Buds3 Pro+** | 🟡 Not Verified | Battery, 32dB Hybrid ANC, Dual Connection, Master EQ, Gestures |
+| **OPPO Enco Buds3 Pro** | 🟡 Not Verified | Battery, 32dB Hybrid ANC, Dual Connection, Master EQ, Gestures |
+| **OPPO Enco Buds3** | 🟡 Not Verified | Battery, Master EQ, Low Latency, Gestures *(Non-ANC)* |
+| **OPPO Enco Buds 2** | 🟡 Not Verified | Battery, Enco Live Stereo EQ, Low Latency, Gestures *(Non-ANC)* |
+| **OPPO Enco Free3** | 🟡 Not Verified | Battery, Bamboo Diaphragm ANC Tree, In-Ear Detection, Gestures |
+| **OPPO Enco X** | 🟡 Not Verified | Battery, Dynaudio EQ, ANC Tree, In-Ear Detection, Gestures |
 
-### realme
-| Model | Status | Features |
+### Realme
+| Model | Status | Tailored Features |
 |---|:---:|---|
-| **realme Buds Air 6 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds Air 6** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds Air 5 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds Air 5** | 🟢 Supported | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds Air 7 Pro** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds T310** | 🟡 Experimental | Battery, realme EQ, Multi-level ANC, Game Mode, Dual Connection |
-| **realme Buds T300** | 🟢 Supported | Battery, realme EQ, Noise Control (Off / ANC / Transparency), Game Mode |
-| **realme Buds T110** | 🟡 Experimental | Battery, realme EQ, Game Mode, Gestures |
+| **Realme Buds Air 8 Pro** | 🟡 Not Verified | Battery, 55dB ANC Tree, 360° Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 8** | 🟡 Not Verified | Battery, 55dB ANC Tree, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 7 Pro** | 🟡 Not Verified | Battery, 53dB ANC Tree, Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 7** | 🟡 Not Verified | Battery, 52dB ANC Tree, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 6 Pro** | 🟡 Not Verified | Battery, 50dB ANC Tree, 360° Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 6** | 🟡 Not Verified | Battery, 50dB ANC Tree, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 5 Pro** | 🟡 Not Verified | Battery, 50dB ANC Tree, Spatial Audio, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds Air 5** | 🟡 Not Verified | Battery, Multi-level ANC, Dynamic Bass EQ, Dual Connection, In-Ear Detection, Gestures |
+| **Realme Buds T310** | 🟡 Not Verified | Battery, 46dB Hybrid ANC, 360° Spatial Effect, Dual Connection, Gestures |
+| **Realme Buds T300** | 🟡 Not Verified | Battery, 30dB Core ANC, 360° Spatial Effect, Dual Connection, Gestures |
+| **Realme Buds T200** | 🟡 Not Verified | Battery, 32dB Core ANC, Dynamic Bass EQ, Low Latency, Gestures |
+| **Realme Buds T200x** | 🟡 Not Verified | Battery, 25dB Core ANC, Dynamic Bass EQ, Low Latency, Gestures |
+| **Realme Buds T200 Lite** | 🟡 Not Verified | Battery, AI ENC, Dual-Device Pairing, Dynamic Bass EQ, Gestures *(Non-ANC)* |
+| **Realme Buds T110** | 🟡 Not Verified | Battery, AI ENC, Dynamic Bass EQ, Low Latency, Gestures *(Non-ANC)* |
+| **Realme Buds N1** | 🟡 Not Verified | Battery, 46dB Hybrid ANC, 360° Spatial Audio, Dual Connection, Gestures |
 
 ---
 

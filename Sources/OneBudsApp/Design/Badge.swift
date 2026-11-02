@@ -7,15 +7,15 @@ struct Badge: View {
     let color: Color
     var help: String?
 
-    static let experimental = Badge(text: "Experimental", color: .orange,
-                                    help: "Built from documented protocol research but not yet verified on these earbuds.")
+    static let experimental = Badge(text: "Not Verified", color: .orange,
+                                    help: "Built from documented protocol research but not yet verified on hardware.")
     static let demo = Badge(text: "Demo", color: .purple,
                             help: "Demo mode: simulated earbuds, no Bluetooth. Turn it off in Settings.")
 
     static func status(_ status: SupportStatus) -> Badge {
         switch status {
         case .verified: Badge(text: "Verified", color: .green, help: "Tested on hardware.")
-        case .experimental: .experimental
+        case .experimental: Badge(text: "Not Verified", color: .orange, help: "Not yet hardware-verified.")
         case .unsupported: Badge(text: "Unsupported", color: .secondary)
         case .unknown: Badge(text: "Unknown", color: .secondary, help: "Diagnostics only.")
         }

@@ -23,11 +23,11 @@ struct ConnectionStateContent {
     var detail: String? {
         switch state {
         case .noDevice, .idle: "Take your earbuds out of the case and connect them to this Mac in System Settings → Bluetooth."
-        case .unauthorized: "OneBuds needs Bluetooth access to talk to your earbuds. Allow it in System Settings → Privacy & Security → Bluetooth."
-        case .bluetoothOff: "Turn Bluetooth on to use OneBuds."
-        case .bluetoothUnsupported: "This Mac does not offer the Bluetooth features OneBuds needs."
-        case .unrecognised: "OneBuds only controls models with a verified or experimental profile. You can export read-only diagnostics to help add this one."
-        case .failed: "OneBuds will try again automatically."
+        case .unauthorized: "MacMelody needs Bluetooth access to talk to your earbuds. Allow it in System Settings → Privacy & Security → Bluetooth."
+        case .bluetoothOff: "Turn Bluetooth on to use MacMelody."
+        case .bluetoothUnsupported: "This Mac does not offer the Bluetooth features MacMelody needs."
+        case .unrecognised: "MacMelody only controls models with a verified or recognized profile. You can export read-only diagnostics to help add this one."
+        case .failed: "MacMelody will try again automatically."
         case .searching, .connecting, .handshaking: "This usually takes a second or two."
         case .connected: nil
         }

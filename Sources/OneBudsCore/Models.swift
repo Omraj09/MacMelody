@@ -27,7 +27,14 @@ public enum Capability: String, CaseIterable, Sendable, Codable, Identifiable {
 public enum SupportStatus: String, Sendable, Codable, CaseIterable, Comparable {
     case verified, experimental, unsupported, unknown
 
-    public var displayName: String { rawValue.capitalized }
+    public var displayName: String {
+        switch self {
+        case .verified: "Verified"
+        case .experimental: "Not Verified"
+        case .unsupported: "Unsupported"
+        case .unknown: "Unknown"
+        }
+    }
 
     private var rank: Int {
         switch self {

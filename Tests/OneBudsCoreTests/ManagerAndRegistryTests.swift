@@ -20,9 +20,9 @@ import OneBudsProtocol
     }
 
     @Test func unknownModelsAreDiagnosticsOnly() throws {
-        let buds4 = try #require(DeviceRegistry.match(name: "OnePlus Buds 4"))
-        #expect(!buds4.allowsControlSession)
-        #expect(Capability.allCases.allSatisfy { buds4.presentation($0) == .hidden })
+        let untested = try #require(DeviceRegistry.match(name: "OnePlus Buds V"))
+        #expect(!untested.allowsControlSession)
+        #expect(Capability.allCases.allSatisfy { untested.presentation($0) == .hidden })
     }
 
     @Test func nothingIsClaimedVerifiedWithoutEvidence() {
@@ -194,10 +194,10 @@ final class ScriptedConnector: DeviceConnector {
     }
 
     @Test func unknownModelGetsNoSession() async {
-        let connector = ScriptedConnector(found: [DiscoveredEarbuds(name: "OnePlus Buds 4", discoveryPaths: ["test"], transports: [.rfcomm])])
+        let connector = ScriptedConnector(found: [DiscoveredEarbuds(name: "OnePlus Buds V", discoveryPaths: ["test"], transports: [.rfcomm])])
         let manager = DeviceManager(connector: connector, reconnectDelays: [])
         await manager.connect()
-        #expect(manager.connection == .unrecognised(name: "OnePlus Buds 4"))
+        #expect(manager.connection == .unrecognised(name: "OnePlus Buds V"))
         #expect(connector.attempted.isEmpty)
     }
 
