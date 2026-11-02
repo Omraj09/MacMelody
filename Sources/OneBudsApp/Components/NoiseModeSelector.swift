@@ -19,7 +19,7 @@ struct NoiseModeSelector: View {
     }
 
     private var confirmed: NoiseCategory? { manager.noiseControl?.category }
-    private var pending: NoiseControlMode? { manager.pendingNoiseControl }
+    private var pending: OneBudsCore.NoiseControlMode? { manager.pendingNoiseControl }
     private var isPending: Bool { manager.status(of: .noiseControl) == .pending }
 
     private var confirmedLevel: ANCLevel? {

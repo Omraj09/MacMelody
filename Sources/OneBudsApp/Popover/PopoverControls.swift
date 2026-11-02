@@ -1,9 +1,11 @@
 import OneBudsCore
 import SwiftUI
 
-/// Connected content of the popover; each group appears only if the model supports it.
+/// Connected content of the popover; driven by BudsViewModel for noise control, ANC depth,
+/// and game mode, plus battery and advanced audio toggles.
 struct PopoverControls: View {
     @Environment(DeviceManager.self) private var manager
+    @StateObject private var viewModel = BudsViewModel()
 
     var body: some View {
         VStack(spacing: Theme.Spacing.m - 2) {
@@ -15,13 +17,8 @@ struct PopoverControls: View {
                 }
             }
 
-            if manager.presentation(.noiseControl) != .hidden {
-                Card {
-                    SectionHeader(title: "Noise Control", presentation: manager.presentation(.noiseControl))
-                        .font(.subheadline.bold())
-                    NoiseModeSelector()
-                }
-            }
+            // Control UI driven by BudsViewModel
+            BudsControlView(viewModel: viewModel)
 
             if manager.presentation(.spatialAudio) != .hidden, let id = manager.profile?.opo?.spatialAudioFeatureID, manager.features[id] != nil {
                 Card {
@@ -34,12 +31,13 @@ struct PopoverControls: View {
                     FeatureToggleRow(capability: .bassWave, featureID: id, symbol: "waveform.path")
                 }
             }
-
-            if manager.presentation(.gameMode) != .hidden, let id = manager.profile?.opo?.gameModeFeatureID, manager.features[id] != nil {
-                Card {
-                    FeatureToggleRow(capability: .gameMode, featureID: id, symbol: "gamecontroller")
-                }
-            }
         }
+        .onAppear {
+            viewModel.attach(manager: manager)
+        }
+        .onChange(of: manager.battery) { _, _ in viewModel.syncFromHardware() }
+        .onChange(of: manager.noiseControl) { _, _ in viewModel.syncFromHardware() }
+        .onChange(of: manager.features) { _, _ in viewModel.syncFromHardware() }
+        .onChange(of: manager.connection) { _, _ in viewModel.syncFromHardware() }
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 
 extension NoiseCategory {
     /// The mode requested when this category is chosen; for noise cancelling the earbuds pick the level.
-    var requestedMode: NoiseControlMode {
+    var requestedMode: OneBudsCore.NoiseControlMode {
         switch self {
         case .off: .off
         case .transparency: .transparency
