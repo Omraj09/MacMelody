@@ -1,6 +1,6 @@
 # Hardware test checklist
 
-Use this to test OneBuds with real earbuds connected to the Mac. For each step, record the date, the earbud firmware (shown in **Device Info**) and the result. Then send the results back so the matching feature in `DeviceRegistry.swift` and `Features.md` can be marked **Verified**.
+Use this to test MacMelody with real earbuds connected to the Mac. For each step, record the date, the earbud firmware (shown in **Device Info**) and the result. Then send the results back so the matching feature in `DeviceRegistry.swift` and `Features.md` can be marked **Verified**.
 
 Before you start:
 
@@ -10,13 +10,13 @@ Before you start:
 
 ## Connection
 
-- [ ] Buds in your ears and connected to the Mac for audio. Open OneBuds: the menu-bar icon turns into earbuds and the popover says **Connected**. Device Info shows `063C14` and `127.127.101`.
+- [ ] Buds in your ears and connected to the Mac for audio. Open MacMelody: the menu-bar icon turns into earbuds and the popover says **Connected**. Device Info shows `063C14` and `127.127.101`.
 - [ ] Put both buds in the case and close the lid. Within a few seconds the status leaves Connected and the battery and settings disappear: no stale values.
-- [ ] Open the case and take the buds out. OneBuds reconnects without any clicks, within about 30 s.
+- [ ] Open the case and take the buds out. MacMelody reconnects without any clicks, within about 30 s.
 - [ ] Click **Disconnect** in Overview. It stays disconnected. Click **Connect** and it reconnects.
-- [ ] Turn Bluetooth off in Control Center. The popover says **Bluetooth is off**. Turn it on and OneBuds reconnects.
-- [ ] Sleep the Mac for at least 1 minute, then wake it. OneBuds shows correct values again, and nothing stays stuck on "Waiting for the earbuds to confirm…".
-- [ ] Quit OneBuds, then open it again. It connects. Audio keeps playing throughout.
+- [ ] Turn Bluetooth off in Control Center. The popover says **Bluetooth is off**. Turn it on and MacMelody reconnects.
+- [ ] Sleep the Mac for at least 1 minute, then wake it. MacMelody shows correct values again, and nothing stays stuck on "Waiting for the earbuds to confirm…".
+- [ ] Quit MacMelody, then open it again. It connects. Audio keeps playing throughout.
 
 ## Battery
 
@@ -28,8 +28,8 @@ Before you start:
 
 - [ ] Popover: choose **Off**, then **Transparency**, then **ANC**. Each time you hear the change, and the control settles on the new value with "Confirmed by the earbuds".
 - [ ] With **ANC** selected, try each **Level**: Smart, Deep, Medium, Light. Each one is confirmed. (Sources disagree on these bytes; report anything that sounds wrong or is reported back differently.)
-- [ ] Long-press a bud to cycle noise control. OneBuds follows without a click (push event).
-- [ ] Take both buds out of your ears and choose a mode. OneBuds shows "refused: put at least one earbud in your ear", and the selection goes back to the previous mode.
+- [ ] Long-press a bud to cycle noise control. MacMelody follows without a click (push event).
+- [ ] Take both buds out of your ears and choose a mode. MacMelody shows "refused: put at least one earbud in your ear", and the selection goes back to the previous mode.
 
 ## Equalizer, features, gestures
 
@@ -39,7 +39,7 @@ Before you start:
 
 ## Phone competition (hypothesis from mac.md §7)
 
-- [ ] Phone Bluetooth **on**, HeyMelody **open**: does OneBuds still connect and control? Change a mode in HeyMelody: does OneBuds follow?
+- [ ] Phone Bluetooth **on**, HeyMelody **open**: does MacMelody still connect and control? Change a mode in HeyMelody: does MacMelody follow?
 - [ ] Phone Bluetooth **off**: repeat the noise-control step.
 
 ## Demo mode
@@ -48,11 +48,11 @@ Before you start:
 
 ## realme (Buds Air 5, Buds T300)
 
-- [ ] Connect the realme buds to the Mac. OneBuds connects and Device Info shows `062012` (Air 5) or `062412` (T300).
+- [ ] Connect the realme buds to the Mac. MacMelody connects and Device Info shows `062012` (Air 5) or `062412` (T300).
 - [ ] Battery matches the realme Link app.
 - [ ] Noise control: Off, Transparency, ANC, and on the Air 5 the levels Light/Deep/Medium/Smart. Each is confirmed and audible.
 - [ ] EQ presets (Pure Raw, Deep Bass, Pure Vocals, Pure Bass), game mode, gestures.
-- [ ] realme Buds Wireless 2: OneBuds shows "not a supported model" and sends nothing.
+- [ ] realme Buds Wireless 2: MacMelody shows "not a supported model" and sends nothing.
 
 ## Results log
 

@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="Documentation/Screenshots/app-icon.png" width="128" alt="OneBuds app icon">
+<img src="Packaging/AppIcon.iconset/icon_128x128@2x.png" width="128" alt="MacMelody app icon">
 
-# OneBuds
+# MacMelody
 
 **Control your OnePlus, OPPO and realme earbuds from the macOS menu bar.**
 
@@ -21,21 +21,22 @@ No phone, no HeyMelody, no account, no network. Just Bluetooth.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="Documentation/Screenshots/window-overview-dark.png">
-  <img src="Documentation/Screenshots/window-overview-light.png" width="760" alt="OneBuds main window: battery rings, noise control and features for OnePlus Buds 3">
+  <img src="Documentation/Screenshots/window-overview-light.png" width="760" alt="MacMelody main window: battery rings, noise control and features">
 </picture>
 
 </div>
 
 <br>
 
-## Why OneBuds?
+## Why MacMelody?
 
-OnePlus Buds sound great on a Mac, but every setting lives in an Android or iOS app. OneBuds is a small native app that talks to the earbuds directly over Bluetooth:
+OnePlus, OPPO and realme earbuds sound great on a Mac, but every setting lives in an Android or iOS app. MacMelody is a native macOS companion app that talks to your earbuds directly over Bluetooth:
 
-- 🎧 **Native and light.** A SwiftUI menu-bar app with a stripped binary of about 2.2 MB, around 14 MB of memory and 0.0% CPU when idle.
+- 🎧 **Native, fast and borderless.** Liquid Glass menu bar interface with continuous rounded corners, spring blooming animations, and smooth downward expansions.
+- ⚡ **Full Control.** Seamless Noise Control (Off, Transparency, ANC with Smart/Deep/Medium/Light depth), low-latency Game Mode, Spatial Audio, and BassWave.
 - ✅ **Honest.** A setting shows as changed **only after the earbuds confirm it**: the earbuds acknowledge the command, then a read-back must match. The app never invents battery levels or settings.
 - 🔒 **Private.** Fully local, with no network, analytics or crash reporting.
-- 🧪 **Tested on hardware.** Every feature of the OnePlus Buds 3 is verified on real earbuds. Untested features say so with an **Experimental** badge.
+- 🧪 **Tested on hardware.** Verified on physical earbuds, including OnePlus Buds 3 and OnePlus Nord Buds 4 Pro.
 
 ## Features
 
@@ -47,9 +48,9 @@ OnePlus Buds sound great on a Mac, but every setting lives in an Android or iOS 
 
 - Connection state at a glance
 - Left, right and case battery rings, with charging indicators
-- Noise-control modes, with an ANC level picker on models that have levels
-- Game mode
-- Open OneBuds, Settings… (<kbd>⌘</kbd><kbd>,</kbd>) and Quit
+- Noise-control modes (Off, ANC, Transparency) with an inline ANC Depth picker (Smart, Deep, Medium, Light)
+- Game mode toggle
+- Open MacMelody, Settings… (<kbd>⌘</kbd><kbd>,</kbd>) and Quit
 
 </td>
 <td width="50%" align="center">
@@ -124,13 +125,14 @@ When the earbuds connect, a small floating card appears at the top right of the 
 
 | Model | Status | Notes |
 |---|---|---|
+| **OnePlus Nord Buds 4 Pro** (`066814`) | 🟢 **Verified** | Full support: battery levels, ANC modes & depths (Smart, Deep, Medium, Light), Game Mode, Spatial Audio, BassWave, and menu bar controls. |
 | **OnePlus Buds 3** (`063C14`) | 🟢 **Verified** (fw 127.127.101) | Classic Bluetooth, RFCOMM channel 15. Verified: battery, all noise modes and ANC levels, EQ presets, game mode, touch gestures, device info and live updates. Experimental: in-ear detection and dual connection. |
-| OnePlus Nord Buds 3 Pro (`064414`) | 🟡 Experimental | The protocol reference model. Not tested with OneBuds. |
-| realme Buds Air 5 (`062012`) | 🟡 Experimental | The same OPO protocol with realme's own values: noise levels Light / Deep / Medium / Smart, realme EQ presets and gestures. Tries the 079A service first, then the standard serial port. Not yet tested on hardware. |
-| realme Buds T300 (`062412`) | 🟡 Experimental | As for the Air 5, but noise control has no levels (Off / Transparency / ANC) and there is no in-ear detection. Not yet tested on hardware. |
-| realme Buds Wireless 2 | 🔴 Unsupported | Uses realme's older, undocumented realme Link protocol, not OPO. Adding it needs an Android Bluetooth capture. |
+| OnePlus Nord Buds 3 Pro (`064414`) | 🟡 Experimental | The protocol reference model. |
+| realme Buds Air 5 (`062012`) | 🟡 Experimental | The same OPO protocol with realme's own values: noise levels Light / Deep / Medium / Smart, realme EQ presets and gestures. Tries the 079A service first, then the standard serial port. |
+| realme Buds T300 (`062412`) | 🟡 Experimental | As for the Air 5, but noise control has no levels (Off / Transparency / ANC) and there is no in-ear detection. |
+| realme Buds Wireless 2 | 🔴 Unsupported | Uses realme's older realme Link protocol. |
 | Other realme TL models (Air 5 Pro, Air6, Air6 Pro, Air7 Pro, T310) | ⚪ Unknown | Diagnostics only. |
-| Other OnePlus models (Buds 4, Pro 2/3, Nord Buds 3, Buds Pro) | ⚪ Unknown | Diagnostics only. OneBuds never sends commands to them. |
+| Other OnePlus models (Buds 4, Pro 2/3, Nord Buds 3, Buds Pro) | ⚪ Unknown | Diagnostics only. |
 
 Unsupported features are hidden, and experimental ones carry an **Experimental** badge. The evidence for every feature is in [Documentation/Features.md](Documentation/Features.md). Sources and licences are in [Documentation/ProtocolSources.md](Documentation/ProtocolSources.md).
 
@@ -142,20 +144,23 @@ Unsupported features are hidden, and experimental ones carry an **Experimental**
 **You need:** macOS 14 or later, Apple's Command Line Tools (`xcode-select --install`) and Swift 6. Xcode is **not** needed.
 
 ```sh
-git clone https://github.com/himanshudev28/OneBuds.git
-cd OneBuds
+git clone https://github.com/Omraj09/MacMelody.git
+cd MacMelody
 
 # One-time: create a local code-signing identity so macOS remembers the Bluetooth permission
 scripts/setup-signing.sh
 
-# Build build/OneBuds.app. --install also copies it to /Applications and opens it.
+# Build build/MacMelody.app. --install also copies it to /Applications and opens it.
 scripts/build-app.sh --install
+
+# Build DMG installer (creates build/MacMelody.dmg)
+scripts/build-dmg.sh
 
 # Run the tests (swift-testing, works without Xcode)
 swift test
 ```
 
-On first launch, macOS asks for Bluetooth access for **OneBuds**. Click **Allow**. Then connect your earbuds to the Mac for audio in System Settings → Bluetooth, and OneBuds finds them.
+On first launch, macOS asks for Bluetooth access for **MacMelody**. Click **Allow**. Then connect your earbuds to the Mac for audio in System Settings → Bluetooth, and MacMelody finds them.
 
 <details>
 <summary><b>Permissions and configuration</b></summary>
@@ -168,7 +173,7 @@ On first launch, macOS asks for Bluetooth access for **OneBuds**. Click **Allow*
 | `LSUIElement = YES` | A menu-bar app with no Dock icon. A Dock icon appears only while the main window is open. |
 | Sandbox | **Not sandboxed.** A sandboxed build would need the `com.apple.security.device.bluetooth` entitlement. |
 | Signing | A local self-signed identity, "OneBuds Local Signing", in its own keychain (`scripts/setup-signing.sh`, undo with `scripts/remove-signing.sh`). The designated requirement stays the same across rebuilds, so the permission is kept. |
-| Bundle IDs | `com.local.onebuds` (app), `com.local.onebuds.probe` (diagnostic tool) |
+| Bundle IDs | `com.local.macmelody` (app), `com.local.macmelody.probe` (diagnostic tool) |
 
 If Bluetooth access was denied, the app explains this and links to **System Settings → Privacy & Security → Bluetooth**.
 
@@ -179,13 +184,13 @@ If Bluetooth access was denied, the app explains this and links to **System Sett
 
 <br>
 
-Builds are signed locally for your Mac. To distribute the app, sign it with a **Developer ID Application** certificate (Apple Developer Program), enable the hardened runtime (`codesign --options runtime`), and notarize it (`xcrun notarytool submit … --wait`, then `xcrun stapler staple`). Both steps need tools that ship with Xcode. There are no Mac App Store plans.
+Pre-built binaries are available under [Releases](https://github.com/Omraj09/MacMelody/releases). Download `MacMelody.dmg`, open it, and drag MacMelody to Applications.
 
 </details>
 
 ## Architecture
 
-OneBuds is a SwiftPM package of six modules. The protocol and diagnostics layers import no Apple frameworks, so they are fully unit-tested without Bluetooth.
+MacMelody is a SwiftPM package of six modular layers. The protocol and diagnostics layers import no Apple frameworks, so they are fully unit-tested without Bluetooth.
 
 ```mermaid
 flowchart TD
@@ -260,7 +265,7 @@ The card uses the model, else the render, else a generic earbuds-and-case symbol
 
 **No artwork ships today.** A search in October 2026 found no licensed OnePlus Buds 3 model or render (Sketchfab had none; TurboSquid and CGTrader had only paid models of the original 2020 OnePlus Buds; Cults3D had a case STL with an unconfirmed licence; Wikimedia Commons had no photos). Only licensed artwork of the exact model belongs there.
 
-To check a new model before shipping it, run `ONEBUDS_ARTWORK_CHECK=<dir> build/OneBuds.app/Contents/MacOS/OneBuds`. It renders each bundled `.usdz` through the card's scene at rest and mid-sway on light and dark backgrounds, checks that the background is transparent, and checks that a broken file falls back. A window flashes briefly at the bottom left, because Metal only renders on screen.
+To check a new model before shipping it, run `MACMELODY_ARTWORK_CHECK=<dir> build/MacMelody.app/Contents/MacOS/MacMelody`. It renders each bundled `.usdz` through the card's scene at rest and mid-sway on light and dark backgrounds, checks that the background is transparent, and checks that a broken file falls back. A window flashes briefly at the bottom left, because Metal only renders on screen.
 
 </details>
 
@@ -297,7 +302,7 @@ The app has two development aids, each triggered only by an environment variable
 | Release binary (stripped) | about 2.2 MB |
 
 - No polling once connected: the buds push changes.
-- While disconnected, OneBuds waits for macOS "device connected" notifications. Automatic retries back off to every 2 minutes and never run a Bluetooth scan. Scans happen only at launch or when you click Connect or Try Again.
+- While disconnected, MacMelody waits for macOS "device connected" notifications. Automatic retries back off to every 2 minutes and never run a Bluetooth scan. Scans happen only at launch or when you click Connect or Try Again.
 - Packet formatting is skipped unless packet logging is on.
 - The card window is created on the first card. 3D views exist only while a card with a `.usdz` is up, and a still image replaces the live view when the model is held still.
 
@@ -305,10 +310,10 @@ The app has two development aids, each triggered only by an environment variable
 
 | Symptom | What to do |
 |---|---|
-| "No supported earbuds connected" | Connect the buds to the Mac for audio first (System Settings → Bluetooth). OneBuds never pages buds that are not connected. |
-| "Bluetooth permission needed" | System Settings → Privacy & Security → Bluetooth → enable OneBuds. If you rebuilt with ad-hoc signing, run `scripts/setup-signing.sh` and rebuild. |
+| "No supported earbuds connected" | Connect the buds to the Mac for audio first (System Settings → Bluetooth). MacMelody never pages buds that are not connected. |
+| "Bluetooth permission needed" | System Settings → Privacy & Security → Bluetooth → enable MacMelody. If you rebuilt with ad-hoc signing, run `scripts/setup-signing.sh` and rebuild. |
 | "Refused: put at least one earbud in your ear" | Noise control works only while a bud is worn (status `0x0E`). |
-| "No confirmation from the earbuds" | The earbuds did not answer within 2.5 s. The setting may not have changed, so OneBuds keeps showing the last confirmed value. |
+| "No confirmation from the earbuds" | The earbuds did not answer within 2.5 s. The setting may not have changed, so MacMelody keeps showing the last confirmed value. |
 | Stuck after waking from sleep | Overview → Disconnect, then Connect. Please export Diagnostics and report it. |
 | `open` fails with error -10810 | The output file passed to `open --stdout` already existed. The scripts handle this. |
 | The phone's HeyMelody app interferes | Untested (see [the checklist](Documentation/HardwareTestChecklist.md)). Close HeyMelody, or turn off the phone's Bluetooth. |
@@ -320,17 +325,17 @@ The app has two development aids, each triggered only by an environment variable
 | [Features.md](Documentation/Features.md) | Every feature, per model, with the evidence for its status |
 | [ProtocolSources.md](Documentation/ProtocolSources.md) | Protocol references, licences, revisions and decoded facts |
 | [HardwareTestChecklist.md](Documentation/HardwareTestChecklist.md) | Step-by-step tests to verify a model on real earbuds |
-| [PhaseB-Report.md](Documentation/PhaseB-Report.md) | The original Buds 3 Bluetooth investigation |
+| [PhaseB-Report.md](Documentation/PhaseB-Report.md) | The original Bluetooth investigation |
 | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Dependencies (none) and attribution |
 
 ## Credits
 
-The protocol research behind this app is by Aasheesh, Vedanth Jadhav, spizganed (QuickBuds), Zhaoyi-ya (OppoPodsManager), the OppoPods authors, kunalagra (OtoControl), Aniket Budhwani (OPPO-Earbuds-Mac-Controller) and Vedat Kılıç (galaxy-buds-mac). OneBuds' code is written independently from those documented facts; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The protocol research behind this app is by Aasheesh, Vedanth Jadhav, spizganed (QuickBuds), Zhaoyi-ya (OppoPodsManager), the OppoPods authors, kunalagra (OtoControl), Aniket Budhwani (OPPO-Earbuds-Mac-Controller) and Vedat Kılıç (galaxy-buds-mac). MacMelody's code is written independently from those documented facts; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 <br>
 
 <div align="center">
 
-<sub>OneBuds is unofficial and not affiliated with OnePlus, OPPO or realme. All product names are trademarks of their owners.</sub>
+<sub>MacMelody is unofficial and not affiliated with OnePlus, OPPO or realme. All product names are trademarks of their owners.</sub>
 
 </div>

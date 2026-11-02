@@ -14,14 +14,14 @@ Section 4 holds the observed results.
 
 ## 1. The tool: `onebuds-probe`
 
-It is built with SwiftPM only (no Xcode) and packaged as `build/OneBuds Probe.app`.
+It is built with SwiftPM only (no Xcode) and packaged as `build/MacMelody Probe.app`.
 
 | Item | Value |
 |---|---|
 | Bundle identifier | `com.local.onebuds.probe` (stable) |
-| Signing | "OneBuds Local Signing", a self-signed certificate kept in `~/Library/Keychains/onebuds-signing.keychain-db` |
+| Signing | "MacMelody Local Signing", a self-signed certificate kept in `~/Library/Keychains/onebuds-signing.keychain-db` |
 | Designated requirement | `identifier "com.local.onebuds.probe" and certificate leaf = H"a38536b6…"`. This stays the same on every rebuild, so macOS keeps the Bluetooth permission. |
-| Permission | `NSBluetoothAlwaysUsageDescription` is set. The app is launched through LaunchServices (`open`), so macOS asks for permission for **OneBuds Probe**, not for your terminal. |
+| Permission | `NSBluetoothAlwaysUsageDescription` is set. The app is launched through LaunchServices (`open`), so macOS asks for permission for **MacMelody Probe**, not for your terminal. |
 | Dock icon | None (`LSUIElement`). It exits when finished. |
 | Sandbox | Off |
 
@@ -80,7 +80,7 @@ If macOS shows a **pairing dialog** during BLE discovery, click **Cancel** and t
    cd "/Users/himanshu/Downloads/Visual Studio/Web Dev/VIbe_code/HeyMelodyMac"
    scripts/run-probe.sh
    ```
-3. When macOS asks whether **"OneBuds Probe" would like to use Bluetooth**, click **Allow**.
+3. When macOS asks whether **"MacMelody Probe" would like to use Bluetooth**, click **Allow**.
    - If you miss the prompt or deny it, enable it under System Settings → Privacy & Security → Bluetooth, then run again.
 4. Wait about 30–60 s. The report prints in Terminal.
 5. **Run it again with standard reads.** This reads the model and firmware strings only:
@@ -92,7 +92,7 @@ If macOS shows a **pairing dialog** during BLE discovery, click **Cancel** and t
 
 **If a run hangs for more than 2 minutes:** press Ctrl-C, run `pkill -f onebuds-probe`, and tell me.
 
-**If you want to undo the signing setup later:** run `scripts/remove-signing.sh`. It removes only the OneBuds keychain.
+**If you want to undo the signing setup later:** run `scripts/remove-signing.sh`. It removes only the MacMelody keychain.
 
 ---
 
@@ -166,7 +166,7 @@ Class of device `0x240404` (audio/video, wearable headset). There are 12 SDP rec
   - The company ID `0x079A` is OPPO (Observed via the SIG list).
   - The next bytes `14 3C 06` are the little-endian form of product ID **`063C14`**, which matches HeyMelody's OnePlus Buds 3 entry (S5).
   - So discovery can match a model from advertising data without connecting.
-- **C7, FE2C (Hypothesis strengthened):** the `FE2C1233`–`FE2C1238` characteristic set matches Google Fast Pair's layout. It is not part of OPO, and OneBuds will not touch it.
+- **C7, FE2C (Hypothesis strengthened):** the `FE2C1233`–`FE2C1238` characteristic set matches Google Fast Pair's layout. It is not part of OPO, and MacMelody will not touch it.
 - **Two BLE peripherals.** Possibly the left and right buds each expose GATT, or one is a separate Fast Pair advertising identity. Not resolved by read-only means.
 - **Chipset hint.** The Device ID vendor is Bestechnic, while the AVRCP ProviderName is "MtView". These are inconclusive and irrelevant to control.
 - **Implementation consequence (Observed).** `getRFCOMMChannelID` can disagree with the record's ProtocolDescriptorList, as it does for Handsfree. `RFCOMMTransport` must cross-check against the parsed value and log any mismatch.

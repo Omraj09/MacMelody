@@ -55,7 +55,7 @@ if [[ -d "$mount_point" ]]; then
     SetFile -a V "$mount_point/.VolumeIcon.icns" 2>/dev/null || true
   fi
 
-  # Attempt clean Finder layout (OneBuds.app on left, Applications on right)
+  # Attempt clean Finder layout (MacMelody.app on left, Applications on right)
   osascript -e "
     tell application \"Finder\"
       tell disk \"$vol_name\"

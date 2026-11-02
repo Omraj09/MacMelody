@@ -1,4 +1,4 @@
-# OneBuds feature record
+# MacMelody feature record
 
 This file records, for each feature, the protocol bytes, the expected response, how it is verified, and what has been tested on which hardware. Byte layouts are described in [ProtocolSources.md](ProtocolSources.md) §4–§6.
 

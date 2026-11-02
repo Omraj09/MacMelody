@@ -1,15 +1,15 @@
-# OneBuds: Protocol Sources and Provenance
+# MacMelody: Protocol Sources and Provenance
 
 Status: **Phase A (research)**. Last updated 2026-10-12.
 
-This document records every protocol fact OneBuds relies on, where it came from, and how sure we are of it. Code in OneBuds is written independently from these facts. No source code from any reference project is copied (see §2).
+This document records every protocol fact MacMelody relies on, where it came from, and how sure we are of it. Code in MacMelody is written independently from these facts. No source code from any reference project is copied (see §2).
 
 ## Labels
 
 | Label | Meaning |
 |---|---|
-| **Documented** | Stated by a cited source (code, docs, capture, or issue). Not yet tested by OneBuds. |
-| **Verified** | Tested by the OneBuds owner on physical hardware. Each entry records the date, model, and firmware. |
+| **Documented** | Stated by a cited source (code, docs, capture, or issue). Not yet tested by MacMelody. |
+| **Verified** | Tested by the MacMelody owner on physical hardware. Each entry records the date, model, and firmware. |
 | **Hypothesis** | Our own inference from documented facts. It must be tested before the app relies on it. |
 
 At the end of Phase A, **nothing is Verified**. No OnePlus Buds 3 traffic has been captured anywhere we found.
@@ -28,7 +28,7 @@ Commit SHAs pin the exact revision that was read.
 | S2 | [AasheeshLikePanner/cracked-oneplus-buds](https://github.com/AasheeshLikePanner/cracked-oneplus-buds) (original OPOv1 BLE research) | README says "MIT". **No LICENSE file and no copyright line.** | `main` @ `632076540684a2127ef701db9e3c9a309ffac8fb` (2026-02-27) | Facts only. Credited. |
 | S3 | [aasheesh.vercel.app/blog/oneplus-buds](https://aasheesh.vercel.app/blog/oneplus-buds) (write-up, "© 2026 Aasheesh Rathour") | No licence stated | Fetched 2026-10-12 | Cited as a source |
 | S4 | [spizganed/QuickBuds](https://github.com/spizganed/QuickBuds) (`docs/PROTOCOL.md`, Android/desktop, RFCOMM) | **GPL-3.0-or-later**, © 2026 spizganed | `main` @ `47929f34d52e29b69e37b95bfbd74df0813ca240` (2026-10-11) | **Read only.** Facts only, re-implemented independently. |
-| S5 | [Zhaoyi-ya/OppoPodsManager](https://github.com/Zhaoyi-ya/OppoPodsManager) (Windows/Linux, 137 models; **archived** 2026-09-30) | **GPL-3.0-or-later**, © 2026 Zhaoyi-ya | `main` @ `96eddba02a666907e8583613cfc3461206808fba` (2026-09-30) | **Read only.** Facts only. Its `DeviceModels.json` derives from HeyMelody's model list and is **not** bundled in OneBuds. |
+| S5 | [Zhaoyi-ya/OppoPodsManager](https://github.com/Zhaoyi-ya/OppoPodsManager) (Windows/Linux, 137 models; **archived** 2026-09-30) | **GPL-3.0-or-later**, © 2026 Zhaoyi-ya | `main` @ `96eddba02a666907e8583613cfc3461206808fba` (2026-09-30) | **Read only.** Facts only. Its `DeviceModels.json` derives from HeyMelody's model list and is **not** bundled in MacMelody. |
 | S6 | [noctalia oppo-pods](https://noctalia.dev/plugins/community/oppo-pods) → upstream [osp54/oppo-pods](https://github.com/osp54/oppo-pods) | **MIT**, © 2026 osp54 | `main` @ `3dbdc475b3fcdb003c6e052eb4c8ee74345ea700` (2026-09-05) | Low trust (see §7). Its embedded HeyMelody server secret and cloud calls must **not** be reused. |
 | S7 | [1812z/OppoPods](https://github.com/1812z/oppopods) (Android/HyperOS), a fork of Leaf-lsgtky/OppoPods, derived from Art-Chen/HyperPods (GPL-3.0) | README says GPL-3.0. **No LICENSE file.** | `master` @ `c201e251e68b59d46b6bc2758146b2c7f13ca2a1` (2026-10-04) | **Read only.** Facts only. |
 | S8 | Leaf-lsgtky/OppoPods `docs/HeyMelody_*` notes (decompiled HeyMelody findings) | No LICENSE file | Read 2026-10-12 | Facts only. Cross-reference for UUIDs and framing. |
@@ -49,7 +49,7 @@ The OPOv1 BLE research is by **Aasheesh (Rathour)** (S2, S3). The first Swift me
 ## 2. Licence conclusions
 
 1. **Only S12 and S14 (and S6) have a valid permissive licence.**
-   - S12 and S14 are MIT with LICENSE files. OneBuds may adapt their code. Any adapted file keeps the MIT notice in its header and is listed in `THIRD_PARTY_NOTICES.md` and in §10.
+   - S12 and S14 are MIT with LICENSE files. MacMelody may adapt their code. Any adapted file keeps the MIT notice in its header and is listed in `THIRD_PARTY_NOTICES.md` and in §10.
    - S1 and S2 claim MIT but ship no licence text or copyright notice. MIT's only condition is to keep that notice, so there is nothing valid to keep. (Not legal advice.)
    - S4, S5, S7, S10, S11, S13 and S15 are GPL, AGPL, or unlicensed.
    - S6 is properly MIT, but it is a Python script of low quality.
@@ -115,7 +115,7 @@ The layout is the same on both bearers. There is **no checksum, CRC or footer** 
 | S1's "ANC query" `AA 09 00 00 04 82 44 02 00 00 F2` | Decodes as `0x8204` ack `00 F2`, an acknowledgement to the buds, **not** a query | Hypothesis | S1 L21-24 decoded with §4 |
 | Recommended init order | Handshake, product ID, event list, subscribe, features, ANC, battery, wear, gestures, about 200 ms apart. After that, rely on pushes and do not poll. | Documented (captured on OnePlus Buds 4) | S4 L148-159 |
 
-**Consequence for OneBuds:** model profiles carry no "auth token". The session layer answers `0x0500` with the real time.
+**Consequence for MacMelody:** model profiles carry no "auth token". The session layer answers `0x0500` with the real time.
 
 ---
 
@@ -136,7 +136,7 @@ All entries are **Documented**. None are verified on OnePlus Buds 3.
 | Codec | `0x0114` | `00 <codec>` | | S4 L645-656 |
 | Find buds | `0x0400 01/00` | | Plays a loud sound. User-initiated only. | S4 L184-203 |
 
-**Never sent by OneBuds:** firmware update, factory reset, power-saving (`17`), and any command not in the model profile.
+**Never sent by MacMelody:** firmware update, factory reset, power-saving (`17`), and any command not in the model profile.
 
 ---
 
@@ -186,7 +186,7 @@ Sources: S4 `models.json` and PROTOCOL.md L264-271, L379-426, L516, L628-681; S5
 | Noise control | **The set value equals the read value**: Off `01`, Transparency `02`, Light `04`, Deep/plain ANC `08`, Medium `10`, Smart `20`. May be reported as 1 byte. The OnePlus split set/read table does *not* apply. | Documented; verified by S12 on T500 Pro and by S15 on Air6 Pro/T200. Not on the owner's models. |
 | S10 realme noise mapping (NC `01`, Off `02`, …) | Contradicts all hardware evidence; not used | Hypothesis: S10 is wrong |
 | Control byte | Send `00`; accept `04`/`08` on receive | Documented (S15) |
-| Handshake | S15 never sends `0x0100`; OneBuds treats a missing handshake reply as non-fatal | Documented |
+| Handshake | S15 never sends `0x0100`; MacMelody treats a missing handshake reply as non-fatal | Documented |
 | Voice-assistant gesture | `04` on realme (`03` on OnePlus) | Documented (S15, S10); S4 conflicts |
 | EQ presets | 0 Pure Raw, 1 Deep Bass, 2 Pure Vocals, 3 Pure Bass | Documented (S4) |
 | Feature ids | Wear `04`, game `06`, dual `11`. **Power saving is `05`: never written.** | Documented (S4) |
@@ -255,11 +255,11 @@ Sources: S12, S13, S14.
 
 ## 10. Implementation provenance log
 
-| Date | OneBuds file | Facts used (§) | Notes |
+| Date | MacMelody file | Facts used (§) | Notes |
 |---|---|---|---|
-| 2026-10-12 | `Sources/OneBudsDiagnostics/KnownUUIDs.swift` | §3 (UUIDs only, used as labels and lookup filters) | Phase B probe. Written independently; no protocol frames. |
-| 2026-10-12 | `Sources/OneBudsProtocol/*` (frame codec, commands, parsers, time reply, redaction rule) | §4–§6 | Clean-room from the tables. Fixtures are the bytes printed by S1, S4 and S12, plus captured Buds 3 replies. |
-| 2026-10-12 | `Sources/OneBudsCore/*` (OPOv1Session, registry, DeviceManager, MockTransport, simulator) | §5–§7 | Clean-room; per-model values live in `DeviceRegistry.swift` with source keys. |
-| 2026-10-12 | `Sources/OneBudsBluetooth/RFCOMMTransport.swift`, `BLETransport.swift`, `BluetoothConnector.swift` | §3, §8 | Written independently from the documented IOBluetooth and Core Bluetooth lessons (S12, S13, S14 ideas, no code). |
-| 2026-10-12 | `Sources/OneBudsApp/*` | — | Original SwiftUI. |
-| 2026-10-12 | `Sources/OneBudsProbe/*` | §8 (IOBluetooth SDP lessons: unfiltered `performSDPQuery`, RFCOMM channel from SDP) | Written independently from the documented lessons. No code copied from S12, S13 or S14. |
+| 2026-10-12 | `Sources/MacMelodyDiagnostics/KnownUUIDs.swift` | §3 (UUIDs only, used as labels and lookup filters) | Phase B probe. Written independently; no protocol frames. |
+| 2026-10-12 | `Sources/MacMelodyProtocol/*` (frame codec, commands, parsers, time reply, redaction rule) | §4–§6 | Clean-room from the tables. Fixtures are the bytes printed by S1, S4 and S12, plus captured Buds 3 replies. |
+| 2026-10-12 | `Sources/MacMelodyCore/*` (OPOv1Session, registry, DeviceManager, MockTransport, simulator) | §5–§7 | Clean-room; per-model values live in `DeviceRegistry.swift` with source keys. |
+| 2026-10-12 | `Sources/MacMelodyBluetooth/RFCOMMTransport.swift`, `BLETransport.swift`, `BluetoothConnector.swift` | §3, §8 | Written independently from the documented IOBluetooth and Core Bluetooth lessons (S12, S13, S14 ideas, no code). |
+| 2026-10-12 | `Sources/MacMelodyApp/*` | — | Original SwiftUI. |
+| 2026-10-12 | `Sources/MacMelodyProbe/*` | §8 (IOBluetooth SDP lessons: unfiltered `performSDPQuery`, RFCOMM channel from SDP) | Written independently from the documented lessons. No code copied from S12, S13 or S14. |
