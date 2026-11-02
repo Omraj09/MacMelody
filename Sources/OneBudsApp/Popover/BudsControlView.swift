@@ -86,7 +86,7 @@ struct BudsControlView: View {
                         }
                     }
                     .padding(.top, 4)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .transition(.opacity)
                 }
             }
 

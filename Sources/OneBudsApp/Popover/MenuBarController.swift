@@ -234,13 +234,24 @@ final class MenuBarPopoverPanel: NSPanel {
 final class MenuBarHostingView<Content: View>: NSHostingView<Content> {
     var onFittingSizeChange: ((CGSize) -> Void)?
     private var lastHeight: CGFloat = 0
+    private var resizeTask: Task<Void, Never>?
 
     override func layout() {
         super.layout()
         let size = fittingSize
-        if size.width > 0 && size.height > 0 && abs(size.height - lastHeight) > 1 {
-            lastHeight = size.height
-            onFittingSizeChange?(size)
+        guard size.width > 0, size.height > 0 else { return }
+        guard abs(size.height - lastHeight) > 1.5 else { return }
+
+        resizeTask?.cancel()
+        resizeTask = Task { @MainActor [weak self] in
+            // Small debounce to let sub-frame interpolations settle into target size
+            try? await Task.sleep(nanoseconds: 16_000_000) // ~1 frame (16ms)
+            guard !Task.isCancelled, let self else { return }
+            let finalSize = self.fittingSize
+            if abs(finalSize.height - self.lastHeight) > 1.0 {
+                self.lastHeight = finalSize.height
+                self.onFittingSizeChange?(finalSize)
+            }
         }
     }
 

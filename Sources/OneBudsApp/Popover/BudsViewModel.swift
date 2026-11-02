@@ -98,7 +98,7 @@ final class BudsViewModel: ObservableObject {
     // MARK: - Hardware Command Hooks (Connect your BLE / RFCOMM writer here)
 
     func setNoiseMode(_ mode: NoiseControlMode) {
-        withAnimation(.spring(response: 0.42, dampingFraction: 0.74)) {
+        withAnimation(.easeInOut(duration: 0.24)) {
             noiseMode = mode
         }
         // Send ANC mode packet to buds
