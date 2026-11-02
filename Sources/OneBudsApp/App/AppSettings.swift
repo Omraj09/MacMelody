@@ -97,7 +97,7 @@ final class AppSettings {
             }
             panelModuleOrder = order.isEmpty ? PanelModule.allCases : order
         } else {
-            panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection, .spatialAudio]
+            panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection]
         }
 
         if let savedEnabled = defaults.stringArray(forKey: "enabledPanelModules") {
@@ -137,7 +137,7 @@ final class AppSettings {
     }
 
     func resetPanelCustomization() {
-        panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection, .spatialAudio]
+        panelModuleOrder = [.battery, .noiseControl, .gameMode, .equalizer, .inEarDetection]
         enabledPanelModules = [.battery, .noiseControl, .gameMode, .equalizer]
         panelOrientation = .stacked
     }

@@ -77,8 +77,6 @@ struct PopoverControls: View {
             equalizerCard()
         case .inEarDetection:
             inEarDetectionCard()
-        case .spatialAudio:
-            spatialAudioCard()
         }
     }
 
@@ -306,41 +304,6 @@ struct PopoverControls: View {
         }
     }
 
-    // MARK: - Spatial Audio Card
-
-    @ViewBuilder
-    private func spatialAudioCard() -> some View {
-        if let id = manager.profile?.opo?.spatialAudioFeatureID,
-           let isEnabled = manager.features[id] {
-            Card {
-                HStack {
-                    Label {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Spatial Audio")
-                                .font(.subheadline.bold())
-                            Text("360° fixed spatial sound")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    } icon: {
-                        Image(systemName: "dot.radiowaves.left.and.right")
-                            .font(.title3)
-                            .foregroundStyle(isEnabled ? Color.accentColor : Color.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: Binding(
-                        get: { manager.features[id] ?? false },
-                        set: { val in Task { await manager.setFeature(id, enabled: val) } }
-                    ))
-                    .toggleStyle(.switch)
-                    .labelsHidden()
-                }
-            }
-        }
-    }
-
     // MARK: - Compact Tile (Control Center Grid)
 
     @ViewBuilder
@@ -367,18 +330,6 @@ struct PopoverControls: View {
                     Task { await manager.setFeature(id, enabled: !isEnabled) }
                 }
             }
-        case .spatialAudio:
-            if let id = manager.profile?.opo?.spatialAudioFeatureID,
-               let isEnabled = manager.features[id] {
-                ControlCenterTile(
-                    symbol: "dot.radiowaves.left.and.right",
-                    title: "Spatial",
-                    subtitle: isEnabled ? "360° Audio" : "Off",
-                    isOn: isEnabled
-                ) {
-                    Task { await manager.setFeature(id, enabled: !isEnabled) }
-                }
-            }
         default:
             EmptyView()
         }
@@ -397,8 +348,6 @@ struct PopoverControls: View {
             return manager.presentation(.equalizer) != .hidden && !(profile.opo?.equalizerPresets.isEmpty ?? true)
         case .inEarDetection:
             return profile.opo?.wearDetectionFeatureID != nil && manager.presentation(.wearDetection) != .hidden
-        case .spatialAudio:
-            return profile.opo?.spatialAudioFeatureID != nil && manager.presentation(.spatialAudio) != .hidden
         }
     }
 }

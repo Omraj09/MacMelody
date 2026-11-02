@@ -8,7 +8,6 @@ enum PanelModule: String, CaseIterable, Identifiable, Codable {
     case gameMode = "gameMode"
     case equalizer = "equalizer"
     case inEarDetection = "inEarDetection"
-    case spatialAudio = "spatialAudio"
 
     var id: String { rawValue }
 
@@ -19,7 +18,6 @@ enum PanelModule: String, CaseIterable, Identifiable, Codable {
         case .gameMode: "Game Mode"
         case .equalizer: "Equalizer Presets"
         case .inEarDetection: "In-Ear Detection"
-        case .spatialAudio: "Spatial Audio"
         }
     }
 
@@ -30,7 +28,6 @@ enum PanelModule: String, CaseIterable, Identifiable, Codable {
         case .gameMode: "Ultra-low latency audio toggle"
         case .equalizer: "Hardware DSP audio tuning profiles"
         case .inEarDetection: "Auto-pause when removing earbuds"
-        case .spatialAudio: "360° fixed spatial sound effect"
         }
     }
 
@@ -41,13 +38,12 @@ enum PanelModule: String, CaseIterable, Identifiable, Codable {
         case .gameMode: "gamecontroller"
         case .equalizer: "slider.vertical.3"
         case .inEarDetection: "ear"
-        case .spatialAudio: "dot.radiowaves.left.and.right"
         }
     }
 
     var isCompactTile: Bool {
         switch self {
-        case .gameMode, .inEarDetection, .spatialAudio: true
+        case .gameMode, .inEarDetection: true
         case .battery, .noiseControl, .equalizer: false
         }
     }

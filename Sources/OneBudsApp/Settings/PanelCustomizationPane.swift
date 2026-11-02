@@ -125,8 +125,6 @@ struct PanelCustomizationPane: View {
             return manager.presentation(.equalizer) != .hidden && !(profile.opo?.equalizerPresets.isEmpty ?? true)
         case .inEarDetection:
             return profile.opo?.wearDetectionFeatureID != nil && manager.presentation(.wearDetection) != .hidden
-        case .spatialAudio:
-            return profile.opo?.spatialAudioFeatureID != nil && manager.presentation(.spatialAudio) != .hidden
         }
     }
 }
