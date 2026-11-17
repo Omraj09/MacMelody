@@ -37,7 +37,7 @@ struct GesturesView: View {
                 if !sharedBindings.isEmpty {
                     Section("Both Earbuds") {
                         ForEach(sharedBindings, id: \.self) { binding in
-                            let name = GestureAction(rawValue: binding.action)?.displayName ?? "Action \(binding.action)"
+                            let name = manager.gestureName(binding.action)
                             LabeledContent(name) {
                                 GesturePicker(binding: binding, accessibilityTitle: "Both earbuds, \(name)")
                             }

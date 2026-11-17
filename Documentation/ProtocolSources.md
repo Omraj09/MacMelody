@@ -192,6 +192,10 @@ Sources: S4 `models.json` and PROTOCOL.md L264-271, L379-426, L516, L628-681; S5
 | Feature ids | Wear `04`, game `06`, dual `11`. **Power saving is `05`: never written.** | Documented (S4) |
 | realme Buds Wireless 2 | `protocolType 2`, SPP `1101`, id `C1E2B1`: older realme Link protocol, **not OPO**, undocumented | Documented (S5, S10) |
 
+For Buds Air 8, [RealBuds](https://github.com/rafsanbasunia/realbuds-oss) documents spatial audio switch `1B`, dynamic audio switch `26` and band commands `012C`/`041B`, and high-volume commands `0110`/`0407`. The connected earbuds reported product ID `066812` and returned the dynamic-audio bands and high-volume state. These controls remain experimental in MacMelody.
+
+The same Air 8 source documents feature switches `05`, `08`, `09`, `0C`, `18`, `1A`, and `1D`, per-event subscriptions `0201`, wear `0109`, listening time `0128`, locate sound `0400`, and six-band custom EQ `0122`/`0418`. Locate sound is a latch: MacMelody attempts to stop it after ten seconds and before a manual disconnect. Switching power saving or high-definition sound may interrupt the connection. The source gives conflicting descriptions for feature `26`; MacMelody uses its specific dynamic-audio mapping and does not claim it is find-my-phone.
+
 ## 8. macOS Bluetooth lessons (Documented)
 
 ### IOBluetooth RFCOMM recipe

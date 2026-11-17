@@ -511,16 +511,18 @@ public enum DeviceRegistry {
 
     public static let realmeBudsAir8 = DeviceProfile(
         id: "realme-buds-air-8", manufacturer: .realme, model: "Realme Buds Air 8", displayName: "Realme Buds Air 8",
-        bluetoothNames: ["realme Buds Air 8", "Realme Buds Air 8", "Buds Air 8"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        bluetoothNames: ["realme Buds Air 8", "realme Buds Air8", "Buds Air 8", "Buds Air8"], transports: [.rfcomm], rfcommServiceUUIDs: [standardSPP, opoService], ble: nil,
         protocolKind: .opoV1,
-        opo: OPOParameters(productIDs: ["065812"], noiseModes: realmeLevelModes, equalizerPresets: realmeEQ,
-                           featureStatusIDs: [0x04, 0x06, 0x11], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
-                           dualConnectionFeatureID: 0x11, gestureFunctions: realmeGestures,
-                           gestureFunctionNames: [0x04: "Voice assistant", 0x03: "Function 0x03"]),
+        opo: OPOParameters(productIDs: ["065812", "066812"], noiseModes: realmeLevelModes, equalizerPresets: [EQPresetOption(id: 0, name: "Nature Balance"), EQPresetOption(id: 1, name: "Bass Boost"), EQPresetOption(id: 2, name: "Clear Vocals"), EQPresetOption(id: 3, name: "Clear Bass")],
+                           featureStatusIDs: [0x04, 0x05, 0x06, 0x08, 0x09, 0x0C, 0x11, 0x18, 0x1A, 0x1B, 0x1D, 0x26], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
+                           dualConnectionFeatureID: 0x11, spatialAudioFeatureID: 0x1B, dynamicAudioFeatureID: 0x26, extraWritableFeatureIDs: [0x05, 0x08, 0x09, 0x0C, 0x18, 0x1A, 0x1D],
+                           gestureFunctions: [2: [0, 1, 3, 5, 6, 8, 11, 12, 13, 17], 3: [0, 1, 3, 5, 6, 8, 11, 12, 13, 17], 4: [0, 1, 3, 5, 6, 8, 11, 12, 13, 17], 5: [0, 1, 3, 5, 6, 8, 11, 12, 13, 17], 6: [0, 1, 3, 5, 6, 8, 11, 12, 13, 17]],
+                           gestureFunctionNames: [0x03: "Voice assistant"]),
         status: .experimental,
         capabilities: [.battery: .experimental, .noiseControl: .experimental, .equalizer: .experimental, .gestures: .experimental,
-                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental],
-        testedFirmware: [], limitations: realmeLimitations, sources: ["S4", "S5"], evidence: [])
+                       .gameMode: .experimental, .wearDetection: .experimental, .dualConnection: .experimental, .deviceInfo: .experimental,
+                       .spatialAudio: .experimental, .dynamicAudio: .experimental, .highVolume: .experimental],
+        testedFirmware: [], limitations: realmeLimitations.filter { !$0.contains("power saving") } + ["High-definition audio and power saving can interrupt the connection."], sources: ["S4", "S5"], evidence: [])
 
     public static let realmeBudsAir7Pro = DeviceProfile(
         id: "realme-buds-air-7-pro", manufacturer: .realme, model: "Realme Buds Air 7 Pro", displayName: "Realme Buds Air 7 Pro",

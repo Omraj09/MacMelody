@@ -49,7 +49,7 @@ public final class DeviceManager {
     }
 
     public enum Operation: Hashable, Sendable {
-        case noiseControl, equalizer, gestures, refresh
+        case noiseControl, equalizer, gestures, refresh, dynamicAudio, highVolume, findEarbuds, customEqualizer
         case feature(UInt8)
     }
 
@@ -74,6 +74,11 @@ public final class DeviceManager {
     public private(set) var pendingNoiseControl: NoiseControlMode?
     public private(set) var equalizerPreset: UInt8?
     public private(set) var features: [UInt8: Bool] = [:]
+    public private(set) var dynamicAudio: [DynamicAudioBand] = []
+    public private(set) var highVolume: Bool?
+    public private(set) var listeningTime: [UInt8: UInt32] = [:]
+    public private(set) var customEqualizers: [CustomEqualizer]?
+    public private(set) var findingEarbuds = false
     public private(set) var gestures: [GestureBinding] = []
     public private(set) var deviceInfo: DeviceInfo?
     public private(set) var wear: [UInt8: UInt8] = [:]
@@ -100,6 +105,7 @@ public final class DeviceManager {
     private let sessionFactory: (any EarbudTransport, DeviceProfile) -> any EarbudProtocol
     private var session: (any EarbudProtocol)?
     private var sessionID: UUID?
+    private var findRequestID = UUID()
     private var eventTask: Task<Void, Never>?
     private var watchTask: Task<Void, Never>?
     private var reconnectTask: Task<Void, Never>?
@@ -256,6 +262,7 @@ public final class DeviceManager {
         reconnectTask?.cancel()
         reconnectTask = nil
         let session = self.session
+        if findingEarbuds { _ = try? await session?.perform(.setFindEarbuds(false)) }
         self.session = nil
         sessionID = nil
         eventTask?.cancel()
@@ -321,6 +328,13 @@ public final class DeviceManager {
         if !featureIDs.isEmpty, let res = await read(.readFeatures(featureIDs)), stillCurrent() {
             apply(res)
         }
+        if profile.id == "realme-buds-air-8" {
+            if let res = await read(.readWear), stillCurrent() { apply(res) }
+            if let res = await read(.readListeningTime), stillCurrent() { apply(res) }
+            if let res = await read(.readCustomEqualizers), stillCurrent() { apply(res) }
+        }
+        if profile.presentation(.dynamicAudio) != .hidden, let res = await read(.readDynamicAudio), stillCurrent() { apply(res) }
+        if profile.presentation(.highVolume) != .hidden, let res = await read(.readHighVolume), stillCurrent() { apply(res) }
         if profile.presentation(.gestures) != .hidden, case .gestures(let bindings)? = await read(.readGestures), stillCurrent() {
             gestures = bindings
         }
@@ -337,8 +351,10 @@ public final class DeviceManager {
         guard let opo = profile.opo else { return [] }
         return [(Capability.gameMode, opo.gameModeFeatureID),
                 (.wearDetection, opo.wearDetectionFeatureID),
-                (.dualConnection, opo.dualConnectionFeatureID)]
-            .compactMap { capability, id in profile.presentation(capability) != .hidden ? id : nil }
+                (.dualConnection, opo.dualConnectionFeatureID),
+                (.spatialAudio, opo.spatialAudioFeatureID),
+                (.dynamicAudio, opo.dynamicAudioFeatureID)]
+            .compactMap { capability, id in profile.presentation(capability) != .hidden ? id : nil } + opo.extraWritableFeatureIDs
     }
 
     // MARK: Changing settings
@@ -356,6 +372,53 @@ public final class DeviceManager {
 
     public func setFeature(_ id: UInt8, enabled: Bool) async {
         await run(.feature(id), .setFeature(id: id, enabled: enabled))
+    }
+
+    public func saveCustomEqualizer(_ eq: CustomEqualizer) async {
+        await run(.customEqualizer, .saveCustomEqualizer(eq))
+        if case .confirmed = status(of: .customEqualizer) { equalizerPreset = eq.id }
+    }
+
+    public func deleteCustomEqualizer(_ id: UInt8) async {
+        await run(.customEqualizer, .deleteCustomEqualizer(id))
+        if case .confirmed = status(of: .customEqualizer) { await refresh() }
+    }
+
+    public func selectCustomEqualizer(_ id: UInt8) async {
+        await run(.customEqualizer, .selectCustomEqualizer(id))
+    }
+
+    public func gestureName(_ action: UInt8) -> String {
+        if profile?.id == "realme-buds-air-8" {
+            switch action {
+            case 4: return "Press and hold (1s)"
+            case 5: return "Press and hold (2s)"
+            case 6: return "Press and hold (3s)"
+            default: break
+            }
+        }
+        return GestureAction(rawValue: action)?.displayName ?? "Action \(action)"
+    }
+
+    public func setFindEarbuds(_ enabled: Bool) async {
+        let requestID = UUID()
+        findRequestID = requestID
+        await run(.findEarbuds, .setFindEarbuds(enabled))
+        if enabled && findingEarbuds {
+            let id = sessionID
+            Task {
+                try? await Task.sleep(for: .seconds(10))
+                if sessionID == id && findRequestID == requestID && findingEarbuds { await run(.findEarbuds, .setFindEarbuds(false)) }
+            }
+        }
+    }
+
+    public func setDynamicAudio(_ band: DynamicAudioBand, value: Int) async {
+        await run(.dynamicAudio, .setDynamicAudio(band, value: value))
+    }
+
+    public func setHighVolume(_ enabled: Bool) async {
+        await run(.highVolume, .setHighVolume(enabled))
     }
 
     public func setGesture(_ binding: GestureBinding) async {
@@ -393,6 +456,12 @@ public final class DeviceManager {
         case .noiseControl(let mode): noiseControl = mode
         case .equalizer(let id): equalizerPreset = id
         case .features(let values): features.merge(values) { $1 }
+        case .customEqualizers(let values): customEqualizers = values
+        case .wear(let values): wear = values
+        case .listeningTime(let values): listeningTime = values
+        case .findEarbuds(let enabled): findingEarbuds = enabled
+        case .dynamicAudio(let bands): dynamicAudio = bands
+        case .highVolume(let enabled): highVolume = enabled
         case .gestures(let bindings): gestures = bindings
         case .deviceInfo(let info): deviceInfo = info
         }
@@ -419,6 +488,8 @@ public final class DeviceManager {
         case .noiseControl(let mode): noiseControl = mode
         case .equalizer(let id): equalizerPreset = id
         case .feature(let id, let enabled): features[id] = enabled
+        case .dynamicAudioBand(let band):
+            if let index = dynamicAudio.firstIndex(where: { $0.id == band.id }) { dynamicAudio[index] = band }
         case .wear(let values): wear.merge(values) { $1 }
         case .packet(let entry):
             guard isPacketLoggingEnabled else { return }
@@ -476,6 +547,11 @@ public final class DeviceManager {
         pendingNoiseControl = nil
         equalizerPreset = nil
         features = [:]
+        dynamicAudio = []
+        highVolume = nil
+        listeningTime = [:]
+        customEqualizers = nil
+        findingEarbuds = false
         gestures = []
         deviceInfo = nil
         wear = [:]

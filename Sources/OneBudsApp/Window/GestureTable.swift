@@ -24,7 +24,7 @@ struct GestureTable: View {
             Divider().gridCellUnsizedAxes(.horizontal)
 
             ForEach(actions, id: \.self) { action in
-                let name = GestureAction(rawValue: action)?.displayName ?? "Action \(action)"
+                let name = manager.gestureName(action)
                 GridRow {
                     Text(name)
                     cell(side: .left, action: action, name: name)

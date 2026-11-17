@@ -47,10 +47,22 @@ public final class RFCOMMTransport: NSObject, EarbudTransport {
         stateContinuation.yield(.connecting)
         do {
             guard device.isConnected() else { throw TransportError.deviceNotFound }
-            let record = try await serviceRecord()
-            let channelID = try channelID(of: record)
-            channelDescription = "RFCOMM channel \(channelID)" + (record.getServiceName().map { " (\"\($0.trimmingCharacters(in: .whitespaces))\")" } ?? "")
-            try await openChannel(channelID)
+            let records = try await serviceRecords()
+            var lastError: Error = TransportError.serviceNotFound("RFCOMM channel")
+            var attempted: Set<BluetoothRFCOMMChannelID> = []
+            var connected = false
+            for record in records {
+                do {
+                    let id = try channelID(of: record)
+                    guard attempted.insert(id).inserted else { continue }
+                    channelDescription = "RFCOMM channel \(id)" + (record.getServiceName().map { " (\"\($0.trimmingCharacters(in: .whitespaces))\")" } ?? "")
+                    openCompletion = nil
+                    try await openChannel(id)
+                    connected = true
+                    break
+                } catch { lastError = error }
+            }
+            guard connected else { throw lastError }
             logger.info("Opened \(self.channelDescription ?? "", privacy: .public)")
             stateContinuation.yield(.connected)
         } catch {
@@ -87,16 +99,17 @@ public final class RFCOMMTransport: NSObject, EarbudTransport {
 
     // MARK: Steps
 
-    private func serviceRecord() async throws -> IOBluetoothSDPServiceRecord {
+    private func serviceRecords() async throws -> [IOBluetoothSDPServiceRecord] {
         let target = SDPQueryTarget()
         if device.performSDPQuery(target) == kIOReturnSuccess {
             _ = await waitUntil(timeout: .seconds(8)) { target.completion != nil }
         }
         // Fall back to cached records when the query does not call back.
-        for uuid in serviceUUIDs {
-            if let sdpUUID = ClassicInspector.sdpUUID(uuid), let record = device.getServiceRecord(for: sdpUUID) { return record }
+        let records = serviceUUIDs.compactMap { uuid in
+            ClassicInspector.sdpUUID(uuid).flatMap { device.getServiceRecord(for: $0) }
         }
-        throw TransportError.serviceNotFound(serviceUUIDs.joined(separator: " / "))
+        guard !records.isEmpty else { throw TransportError.serviceNotFound(serviceUUIDs.joined(separator: " / ")) }
+        return records
     }
 
     private func channelID(of record: IOBluetoothSDPServiceRecord) throws -> BluetoothRFCOMMChannelID {

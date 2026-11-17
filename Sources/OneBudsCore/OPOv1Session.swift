@@ -113,7 +113,11 @@ public actor OPOv1Session: EarbudProtocol {
         let count = Int(offered.payload[1])
         let ids = Array(offered.payload.dropFirst(2).prefix(count)).filter { $0 < 0xF0 }
         guard !ids.isEmpty else { return }
-        _ = try? await request(0x0205, payload: [UInt8(ids.count)] + ids)
+        if profile.id == "realme-buds-air-8" {
+            for id in ids { _ = try? await request(0x0201, payload: [id]) }
+        } else {
+            _ = try? await request(0x0205, payload: [UInt8(ids.count)] + ids)
+        }
     }
 
     // MARK: Commands
@@ -169,6 +173,94 @@ public actor OPOv1Session: EarbudProtocol {
             }
             return .features(values)
 
+        case .readCustomEqualizers:
+            guard profile.id == "realme-buds-air-8" else { throw ProtocolError.unsupported("custom equalizer") }
+            return .customEqualizers(try await readCustomEqualizers())
+
+        case .selectCustomEqualizer(let id):
+            guard profile.id == "realme-buds-air-8", try await readCustomEqualizers().contains(where: { $0.id == id && !$0.frequencies.isEmpty }) else { throw ProtocolError.unsupported("custom equalizer slot") }
+            try await acknowledged(0x0406, payload: [id])
+            let actual = try await readEqualizer()
+            guard actual == id else { throw ProtocolError.notApplied(expected: "custom EQ \(id)", actual: "EQ \(actual)") }
+            return .equalizer(presetID: actual)
+
+        case .deleteCustomEqualizer(let id):
+            guard profile.id == "realme-buds-air-8", let eq = try await readCustomEqualizers().first(where: { $0.id == id && !$0.frequencies.isEmpty }),
+                  (-128...127).contains(eq.minimum), (-128...127).contains(eq.maximum) else { throw ProtocolError.unsupported("custom equalizer slot") }
+            try await acknowledged(0x0418, payload: [3, UInt8(bitPattern: Int8(eq.minimum)), UInt8(bitPattern: Int8(eq.maximum)), id, 0, 0])
+            let actual = try await readCustomEqualizers()
+            guard !actual.contains(where: { $0.id == id && !$0.frequencies.isEmpty }) else { throw ProtocolError.notApplied(expected: "deleted EQ profile", actual: "profile still present") }
+            return .customEqualizers(actual)
+
+        case .saveCustomEqualizer(let eq):
+            guard profile.id == "realme-buds-air-8", (4...6).contains(eq.id), !eq.name.isEmpty, eq.name.utf8.count <= 20,
+                  eq.minimum >= -6, eq.maximum <= 6, eq.minimum <= eq.maximum,
+                  eq.frequencies == [62, 250, 1000, 4000, 8000, 16000], eq.levels.count == 6,
+                  eq.levels.allSatisfy({ (eq.minimum...eq.maximum).contains($0) }) else { throw ProtocolError.unsupported("custom equalizer values") }
+            let original = try await readCustomEqualizers().first { $0.id == eq.id && !$0.frequencies.isEmpty }
+            if let original, (original.minimum != eq.minimum || original.maximum != eq.maximum || original.frequencies != eq.frequencies) {
+                throw ProtocolError.unsupported("custom equalizer range changed")
+            }
+            let name = Array(eq.name.utf8)
+            var payload: [UInt8] = [2, UInt8(bitPattern: Int8(eq.minimum)), UInt8(bitPattern: Int8(eq.maximum)), eq.id, UInt8(name.count)] + name + [UInt8(eq.levels.count)]
+            for (frequency, level) in zip(eq.frequencies, eq.levels) {
+                payload += [UInt8(frequency & 0xFF), UInt8(frequency >> 8), UInt8(bitPattern: Int8(level))]
+            }
+            try await acknowledged(0x0418, payload: payload)
+            let actual = try await readCustomEqualizers()
+            guard actual.contains(eq) else { throw ProtocolError.notApplied(expected: "saved EQ profile", actual: "different EQ profile") }
+            return .customEqualizers(actual)
+
+        case .readWear:
+            guard profile.id == "realme-buds-air-8" else { throw ProtocolError.unsupported("wear status") }
+            let p = try await request(0x0109).payload
+            guard p.count >= 2, p[0] == 0, p.count >= 2 + Int(p[1]) * 2 else { throw ProtocolError.malformedReply(command: 0x0109) }
+            var values: [UInt8: UInt8] = [:]
+            for i in 0..<Int(p[1]) { values[p[2 + i * 2]] = p[3 + i * 2] }
+            return .wear(values)
+
+        case .readListeningTime:
+            guard profile.id == "realme-buds-air-8" else { throw ProtocolError.unsupported("listening time") }
+            let p = try await request(0x0128).payload
+            guard p.count >= 2, p[0] == 0, p.count >= 2 + Int(p[1]) * 5 else { throw ProtocolError.malformedReply(command: 0x0128) }
+            var values: [UInt8: UInt32] = [:]
+            for i in 0..<Int(p[1]) {
+                let j = 2 + i * 5
+                values[p[j]] = UInt32(p[j+1]) | UInt32(p[j+2]) << 8 | UInt32(p[j+3]) << 16 | UInt32(p[j+4]) << 24
+            }
+            return .listeningTime(values)
+
+        case .setFindEarbuds(let enabled):
+            guard profile.id == "realme-buds-air-8" else { throw ProtocolError.unsupported("find earbuds") }
+            try await acknowledged(0x0400, payload: [enabled ? 1 : 0])
+            return .findEarbuds(enabled)
+
+        case .readDynamicAudio:
+            guard profile.presentation(.dynamicAudio) != .hidden else { throw ProtocolError.unsupported("dynamic audio") }
+            return .dynamicAudio(try await readDynamicAudio())
+
+        case .setDynamicAudio(let band, let value):
+            guard profile.presentation(.dynamicAudio) != .hidden else { throw ProtocolError.unsupported("dynamic audio") }
+            let bands = try await readDynamicAudio()
+            guard let current = bands.first(where: { $0.id == band.id }), (current.minimum...current.maximum).contains(value) else {
+                throw ProtocolError.unsupported("dynamic audio band or value")
+            }
+            try await acknowledged(0x041B, payload: [UInt8(bitPattern: Int8(current.minimum)), UInt8(bitPattern: Int8(current.maximum)), UInt8(bitPattern: Int8(value)), current.id])
+            let actual = try await readDynamicAudio()
+            guard actual.first(where: { $0.id == band.id })?.value == value else { throw ProtocolError.notApplied(expected: "\(value)", actual: "different value") }
+            return .dynamicAudio(actual)
+
+        case .readHighVolume:
+            guard profile.presentation(.highVolume) != .hidden else { throw ProtocolError.unsupported("high volume") }
+            return .highVolume(try await readHighVolume())
+
+        case .setHighVolume(let enabled):
+            guard profile.presentation(.highVolume) != .hidden else { throw ProtocolError.unsupported("high volume") }
+            try await acknowledged(0x0407, payload: [enabled ? 1 : 0])
+            let actual = try await readHighVolume()
+            guard actual == enabled else { throw ProtocolError.notApplied(expected: enabled ? "on" : "off", actual: actual ? "on" : "off") }
+            return .highVolume(actual)
+
         case .readGestures:
             return .gestures(try await readGestures())
 
@@ -195,6 +287,47 @@ public actor OPOv1Session: EarbudProtocol {
             }
             return .deviceInfo(deviceInfo)
         }
+    }
+
+    private func readCustomEqualizers() async throws -> [CustomEqualizer] {
+        let p = try await request(0x0122).payload
+        guard p.count >= 2, p[0] == 0 else { throw ProtocolError.malformedReply(command: 0x0122) }
+        var offset = 2, profiles: [CustomEqualizer] = []
+        for _ in 0..<Int(p[1]) {
+            guard offset + 5 <= p.count else { throw ProtocolError.malformedReply(command: 0x0122) }
+            let minimum = Int(Int8(bitPattern: p[offset + 1])), maximum = Int(Int8(bitPattern: p[offset + 2]))
+            let id = p[offset + 3], length = Int(p[offset + 4]); offset += 5
+            guard offset + length + 1 <= p.count, let name = String(bytes: p[offset..<offset + length], encoding: .utf8) else { throw ProtocolError.malformedReply(command: 0x0122) }
+            offset += length
+            let count = Int(p[offset]); offset += 1
+            guard offset + count * 3 <= p.count, minimum <= maximum, !profiles.contains(where: { $0.id == id }) else { throw ProtocolError.malformedReply(command: 0x0122) }
+            var frequencies: [UInt16] = [], levels: [Int] = []
+            for _ in 0..<count {
+                frequencies.append(UInt16(p[offset]) | UInt16(p[offset + 1]) << 8)
+                levels.append(Int(Int8(bitPattern: p[offset + 2]))); offset += 3
+            }
+            profiles.append(CustomEqualizer(id: id, name: name, minimum: minimum, maximum: maximum, frequencies: frequencies, levels: levels))
+        }
+        return profiles
+    }
+
+    private func readDynamicAudio() async throws -> [DynamicAudioBand] {
+        let p = try await request(0x012C).payload
+        guard p.count >= 2, p[0] == 0, p[1] > 0, p.count >= 2 + Int(p[1]) * 4 else { throw ProtocolError.malformedReply(command: 0x012C) }
+        var bands: [DynamicAudioBand] = []
+        for index in 0..<Int(p[1]) {
+            let i = 2 + index * 4
+            let minimum = Int(Int8(bitPattern: p[i])), maximum = Int(Int8(bitPattern: p[i + 1])), value = Int(Int8(bitPattern: p[i + 2]))
+            guard minimum <= maximum, (minimum...maximum).contains(value), (1...3).contains(p[i + 3]), !bands.contains(where: { $0.id == p[i + 3] }) else { throw ProtocolError.malformedReply(command: 0x012C) }
+            bands.append(DynamicAudioBand(id: p[i + 3], minimum: minimum, maximum: maximum, value: value))
+        }
+        return bands.sorted { $0.id < $1.id }
+    }
+
+    private func readHighVolume() async throws -> Bool {
+        let p = try await request(0x0110).payload
+        guard p.count >= 2, p[0] == 0, p[1] <= 1 else { throw ProtocolError.malformedReply(command: 0x0110) }
+        return p[1] == 1
     }
 
     private func readNoiseControl(_ parameters: OPOParameters) async throws -> NoiseControlMode {
@@ -385,6 +518,18 @@ public actor OPOv1Session: EarbudProtocol {
             }
         case 0x0204:
             handlePush(frame.payload)
+        case 0x0503:
+            if profile.id == "realme-buds-air-8", frame.payload.count >= 2,
+               profile.opo?.featureStatusIDs.contains(frame.payload[0]) == true, frame.payload[1] <= 1 {
+                eventContinuation.yield(.feature(id: frame.payload[0], enabled: frame.payload[1] == 1))
+            }
+        case 0x0508:
+            if profile.id == "realme-buds-air-8", frame.payload.count >= 4 {
+                let p = frame.payload, minimum = Int(Int8(bitPattern: p[0])), maximum = Int(Int8(bitPattern: p[1])), value = Int(Int8(bitPattern: p[2]))
+                if minimum <= maximum, (minimum...maximum).contains(value), (1...3).contains(p[3]) {
+                    eventContinuation.yield(.dynamicAudioBand(DynamicAudioBand(id: p[3], minimum: minimum, maximum: maximum, value: value)))
+                }
+            }
         case 0x0504:
             if let id = frame.payload.first { eventContinuation.yield(.equalizer(presetID: id)) }
         default:

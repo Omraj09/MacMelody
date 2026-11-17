@@ -34,6 +34,16 @@ struct OverviewView: View {
                     }
                 }
                 FeatureTogglesSection()
+                if manager.profile?.id == "realme-buds-air-8" {
+                    Section("Find Earbuds") {
+                        Button(manager.findingEarbuds ? "Stop sound" : "Play sound") {
+                            Task { await manager.setFindEarbuds(!manager.findingEarbuds) }
+                        }.disabled(manager.status(of: .findEarbuds) == .pending)
+                        Text("The earbuds may beep loudly. Remove them before playing the sound; it stops after 10 seconds when connected.")
+                            .font(.caption).foregroundStyle(.secondary)
+                        OperationStatusLine(status: manager.status(of: .findEarbuds))
+                    }
+                }
 
                 Section {
                     Button {
