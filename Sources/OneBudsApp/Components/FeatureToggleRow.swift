@@ -27,6 +27,7 @@ struct FeatureToggleRow: View {
                     }
                 }
                 .toggleStyle(.switch)
+                .accessibilityLabel(capability.displayName)
                 .disabled(isPending)
                 if isPending { ProgressView().controlSize(.small) }
             }

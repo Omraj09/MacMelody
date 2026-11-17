@@ -54,6 +54,8 @@ public struct OPOParameters: Sendable {
     public var dualConnectionFeatureID: UInt8?
     public var spatialAudioFeatureID: UInt8?
     public var bassWaveFeatureID: UInt8?
+    public var dynamicAudioFeatureID: UInt8?
+    public var extraWritableFeatureIDs: [UInt8]
     /// Allowed gesture functions per action (`GestureAction` raw value → function codes).
     public var gestureFunctions: [UInt8: [UInt8]]
     /// Model-specific function names that override `GestureFunction.names` (e.g. realme uses
@@ -62,16 +64,15 @@ public struct OPOParameters: Sendable {
 
     public func functionName(_ code: UInt8) -> String { gestureFunctionNames[code] ?? GestureFunction.name(code) }
 
-    /// Feature ids OneBuds may ever write with `0x0403`. Power saving (0x17, restarts the buds)
-    /// and Hi-Res (0x18, drops the link) are deliberately never writable.
+    /// Feature ids the profile explicitly permits OneBuds to write with `0x0403`.
     public var writableFeatureIDs: Set<UInt8> {
-        Set([gameModeFeatureID, wearDetectionFeatureID, dualConnectionFeatureID, spatialAudioFeatureID, bassWaveFeatureID].compactMap { $0 })
+        Set([gameModeFeatureID, wearDetectionFeatureID, dualConnectionFeatureID, spatialAudioFeatureID, bassWaveFeatureID, dynamicAudioFeatureID].compactMap { $0 } + extraWritableFeatureIDs)
     }
 
     public init(productIDs: [String], answersTimeRequest: Bool = true, subscribesToEvents: Bool = true,
                 noiseModes: [NoiseModeOption] = [], equalizerPresets: [EQPresetOption] = [],
                 featureStatusIDs: [UInt8] = [], gameModeFeatureID: UInt8? = nil, wearDetectionFeatureID: UInt8? = nil,
-                dualConnectionFeatureID: UInt8? = nil, spatialAudioFeatureID: UInt8? = nil, bassWaveFeatureID: UInt8? = nil,
+                dualConnectionFeatureID: UInt8? = nil, spatialAudioFeatureID: UInt8? = nil, bassWaveFeatureID: UInt8? = nil, dynamicAudioFeatureID: UInt8? = nil, extraWritableFeatureIDs: [UInt8] = [],
                 gestureFunctions: [UInt8: [UInt8]] = [:], gestureFunctionNames: [UInt8: String] = [:]) {
         self.productIDs = productIDs
         self.answersTimeRequest = answersTimeRequest
@@ -84,6 +85,8 @@ public struct OPOParameters: Sendable {
         self.dualConnectionFeatureID = dualConnectionFeatureID
         self.spatialAudioFeatureID = spatialAudioFeatureID
         self.bassWaveFeatureID = bassWaveFeatureID
+        self.dynamicAudioFeatureID = dynamicAudioFeatureID
+        self.extraWritableFeatureIDs = extraWritableFeatureIDs
         self.gestureFunctions = gestureFunctions
         self.gestureFunctionNames = gestureFunctionNames
     }

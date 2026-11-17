@@ -16,6 +16,33 @@ struct EqualizerView: View {
     var body: some View {
         RequiresCapability(capability: .equalizer) {
             Form {
+                if let profiles = manager.customEqualizers {
+                    Section("Custom EQ Profiles") {
+                        ForEach([UInt8(4), 5, 6], id: \.self) { id in
+                            CustomEQEditor(id: id, saved: profiles.first { $0.id == id })
+                        }
+                        OperationStatusLine(status: manager.status(of: .customEqualizer))
+                    }
+                }
+                if !manager.dynamicAudio.isEmpty {
+                    Section {
+                        ForEach(manager.dynamicAudio) { band in
+                            Stepper(value: Binding(get: { band.value }, set: { value in Task { await manager.setDynamicAudio(band, value: value) } }), in: band.minimum...band.maximum) {
+                                HStack {
+                                    Text(band.id == 1 ? "Low" : band.id == 2 ? "Mid" : "High")
+                                    Spacer()
+                                    Text("\(band.value > 0 ? "+" : "")\(band.value)").monospacedDigit().foregroundStyle(.secondary)
+                                }
+                            }
+                            .disabled(manager.status(of: .dynamicAudio) == .pending || manager.features[0x26] != true)
+                        }
+                        OperationStatusLine(status: manager.status(of: .dynamicAudio))
+                    } header: {
+                        SectionHeader(title: "Dynamic Audio", presentation: manager.presentation(.dynamicAudio))
+                    } footer: {
+                        FormFooter("Enable Dynamic audio in Overview to adjust the low, mid and high bands.")
+                    }
+                }
                 Section {
                     VStack(spacing: 0) {
                         EqualizerPresetGrid(presets: presets)

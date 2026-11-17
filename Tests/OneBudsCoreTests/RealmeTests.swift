@@ -5,6 +5,11 @@ import OneBudsProtocol
 
 @Suite struct RealmeProfileTests {
     @Test func realmeModelsMatchByNameAndProductID() {
+        #expect(DeviceRegistry.match(name: "realme Buds Air8")?.id == "realme-buds-air-8")
+        #expect(DeviceRegistry.match(name: "realme Buds Air 8")?.id == "realme-buds-air-8")
+        #expect(DeviceRegistry.match(name: "Renamed", productID: "065812")?.id == "realme-buds-air-8")
+        #expect(DeviceRegistry.match(name: "Renamed", productID: "066812")?.id == "realme-buds-air-8")
+        #expect(DeviceRegistry.match(name: "realme Buds Air 8 Pro")?.id == "realme-buds-air-8-pro")
         #expect(DeviceRegistry.match(name: "realme Buds Air 5")?.id == "realme-buds-air-5")
         #expect(DeviceRegistry.match(name: "realme Buds T300")?.id == "realme-buds-t300")
         #expect(DeviceRegistry.match(name: "Renamed", productID: "062012")?.id == "realme-buds-air-5")
@@ -89,5 +94,78 @@ import OneBudsProtocol
         }
         guard case .battery(let battery) = try await session.perform(.readBattery) else { Issue.record("no battery"); return }
         #expect(battery.left?.percent == 64 && battery.right?.percent == 65)
+    }
+}
+
+private actor Air8AudioSimulator {
+    var value: UInt8 = 0
+    var high = false
+    var eqRecord: [UInt8] = []
+    let base = MockEarbudsSimulator(profile: DeviceRegistry.realmeBudsAir8)
+
+    func handle(_ data: Data) async -> MockTransport.Reaction {
+        let bytes = [UInt8](data)
+        guard bytes.count > 6 else { return .none }
+        let command = UInt16(bytes[4]) | UInt16(bytes[5]) << 8
+        let payload: [UInt8]
+        switch command {
+        case 0x0201: payload = [0, bytes[9]]
+        case 0x0122: payload = eqRecord.isEmpty ? [0, 0] : [0, 1] + eqRecord
+        case 0x0418:
+            eqRecord = bytes[9] == 3 ? [] : [1] + Array(bytes.dropFirst(10))
+            payload = [0]
+        case 0x0109: payload = [0, 2, 1, 3, 2, 1]
+        case 0x0128: payload = [0, 1, 1, 0x78, 0x56, 0x34, 0x12]
+        case 0x0400: payload = [0]
+        case 0x012C: payload = [0, 1, 0xFB, 5, value, 1]
+        case 0x041B:
+            guard bytes.count >= 13 else { return .none }
+            value = bytes[11]
+            payload = [0]
+        case 0x0110: payload = [0, high ? 1 : 0]
+        case 0x0407:
+            high = bytes[9] != 0
+            payload = [0]
+        default: return await base.handle(data)
+        }
+        return .reply([Data(OPOFrame(command: command | 0x8000, sequence: bytes[6], payload: payload).encoded())])
+    }
+}
+
+@Suite struct Air8AudioTests {
+    @Test func readsWritesAndChecksAudioValues() async throws {
+        let simulator = Air8AudioSimulator()
+        let transport = MockTransport { await simulator.handle($0) }
+        try await transport.connect()
+        let session = OPOv1Session(transport: transport, profile: DeviceRegistry.realmeBudsAir8, replyTimeout: .milliseconds(400), now: { Date() })
+        try await session.startSession()
+        guard case .dynamicAudio(let bands) = try await session.perform(.readDynamicAudio), let band = bands.first else {
+            Issue.record("Missing dynamic audio band"); return
+        }
+        #expect(band.minimum == -5 && band.maximum == 5 && band.value == 0)
+        guard case .dynamicAudio(let updated) = try await session.perform(.setDynamicAudio(band, value: -3)) else {
+            Issue.record("Missing dynamic audio read-back"); return
+        }
+        #expect(updated.first?.value == -3)
+        #expect(await transport.sentFrames.last { $0.command == 0x041B }?.payload == [0xFB, 5, 0xFD, 1])
+        await #expect(throws: ProtocolError.unsupported("dynamic audio band or value")) {
+            _ = try await session.perform(.setDynamicAudio(band, value: 6))
+        }
+        #expect(try await session.perform(.setHighVolume(true)) == .highVolume(true))
+        #expect(await transport.sentFrames.last { $0.command == 0x0407 }?.payload == [1])
+        #expect(try await session.perform(.readWear) == .wear([1: 3, 2: 1]))
+        #expect(try await session.perform(.readListeningTime) == .listeningTime([1: 0x12345678]))
+        #expect(try await session.perform(.setFindEarbuds(true)) == .findEarbuds(true))
+        #expect(try await session.perform(.setFindEarbuds(false)) == .findEarbuds(false))
+        #expect(await transport.sentFrames.filter { $0.command == 0x0201 }.map(\.payload) == [[1], [2], [3]])
+        let custom = CustomEqualizer(id: 4, name: "Test", minimum: -6, maximum: 6, frequencies: [62, 250, 1000, 4000, 8000, 16000], levels: [-6, -2, 0, 2, 4, 6])
+        #expect(try await session.perform(.saveCustomEqualizer(custom)) == .customEqualizers([custom]))
+        #expect(try await session.perform(.readCustomEqualizers) == .customEqualizers([custom]))
+        #expect(try await session.perform(.deleteCustomEqualizer(4)) == .customEqualizers([]))
+        var invalid = custom
+        invalid.levels[0] = 7
+        await #expect(throws: ProtocolError.unsupported("custom equalizer values")) {
+            _ = try await session.perform(.saveCustomEqualizer(invalid))
+        }
     }
 }

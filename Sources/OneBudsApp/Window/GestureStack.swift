@@ -12,7 +12,7 @@ struct GestureStack: View {
                 if !bindings.isEmpty {
                     Text("\(side.displayName) Earbud").font(.subheadline.bold()).foregroundStyle(.secondary)
                     ForEach(bindings, id: \.self) { binding in
-                        let name = GestureAction(rawValue: binding.action)?.displayName ?? "Action \(binding.action)"
+                        let name = manager.gestureName(binding.action)
                         LabeledContent(name) {
                             GesturePicker(binding: binding, accessibilityTitle: "\(side.displayName) earbud, \(name)")
                         }

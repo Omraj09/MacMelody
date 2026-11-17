@@ -3,7 +3,7 @@ import OneBudsProtocol
 
 /// Features OneBuds knows how to present. Each device profile rates each one independently.
 public enum Capability: String, CaseIterable, Sendable, Codable, Identifiable {
-    case battery, noiseControl, equalizer, gestures, gameMode, wearDetection, dualConnection, deviceInfo, spatialAudio, bassWave
+    case battery, noiseControl, equalizer, gestures, gameMode, wearDetection, dualConnection, deviceInfo, spatialAudio, bassWave, dynamicAudio, highVolume
 
     public var id: String { rawValue }
 
@@ -19,6 +19,8 @@ public enum Capability: String, CaseIterable, Sendable, Codable, Identifiable {
         case .deviceInfo: "Device information"
         case .spatialAudio: "Spatial audio"
         case .bassWave: "BassWave™"
+        case .dynamicAudio: "Dynamic audio"
+        case .highVolume: "High volume mode"
         }
     }
 }
@@ -262,6 +264,31 @@ public struct GestureBinding: Sendable, Hashable, Codable {
     public var bytes: [UInt8] { [side, button, action, function] }
 }
 
+public struct DynamicAudioBand: Sendable, Equatable, Identifiable {
+    public let id: UInt8
+    public let minimum: Int
+    public let maximum: Int
+    public let value: Int
+
+    public init(id: UInt8, minimum: Int, maximum: Int, value: Int) {
+        self.id = id; self.minimum = minimum; self.maximum = maximum; self.value = value
+    }
+}
+
+public struct CustomEqualizer: Sendable, Equatable, Identifiable {
+    public var id: UInt8
+    public var name: String
+    public var minimum: Int
+    public var maximum: Int
+    public var frequencies: [UInt16]
+    public var levels: [Int]
+
+    public init(id: UInt8, name: String, minimum: Int, maximum: Int, frequencies: [UInt16], levels: [Int]) {
+        self.id = id; self.name = name; self.minimum = minimum; self.maximum = maximum
+        self.frequencies = frequencies; self.levels = levels
+    }
+}
+
 // MARK: Commands, responses, events
 
 public enum EarbudCommand: Sendable, Equatable {
@@ -272,6 +299,17 @@ public enum EarbudCommand: Sendable, Equatable {
     case setEqualizer(presetID: UInt8)
     case readFeatures([UInt8])
     case setFeature(id: UInt8, enabled: Bool)
+    case readCustomEqualizers
+    case saveCustomEqualizer(CustomEqualizer)
+    case deleteCustomEqualizer(UInt8)
+    case selectCustomEqualizer(UInt8)
+    case readWear
+    case readListeningTime
+    case setFindEarbuds(Bool)
+    case readDynamicAudio
+    case setDynamicAudio(DynamicAudioBand, value: Int)
+    case readHighVolume
+    case setHighVolume(Bool)
     case readGestures
     case setGestures([GestureBinding])
     case readDeviceInfo
@@ -282,6 +320,12 @@ public enum EarbudResponse: Sendable, Equatable {
     case noiseControl(NoiseControlMode)
     case equalizer(presetID: UInt8)
     case features([UInt8: Bool])
+    case customEqualizers([CustomEqualizer])
+    case wear([UInt8: UInt8])
+    case listeningTime([UInt8: UInt32])
+    case findEarbuds(Bool)
+    case dynamicAudio([DynamicAudioBand])
+    case highVolume(Bool)
     case gestures([GestureBinding])
     case deviceInfo(DeviceInfo)
 }
@@ -308,6 +352,7 @@ public enum EarbudEvent: Sendable, Equatable {
     case noiseControl(NoiseControlMode)
     case equalizer(presetID: UInt8)
     case feature(id: UInt8, enabled: Bool)
+    case dynamicAudioBand(DynamicAudioBand)
     case wear([UInt8: UInt8])
     case packet(PacketLogEntry)
     case sessionEnded(reason: String?)
