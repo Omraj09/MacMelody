@@ -24,6 +24,7 @@ import OneBudsProtocol
 
     @Test func realmeTriesVendorServiceThenStandardSerialPort() {
         #expect(DeviceRegistry.realmeBudsAir5.rfcommServiceUUIDs == [DeviceRegistry.opoService, DeviceRegistry.standardSPP])
+        #expect(DeviceRegistry.realmeBudsAir8.rfcommServiceUUIDs == [DeviceRegistry.standardSPP, DeviceRegistry.opoService])
         #expect(DeviceRegistry.onePlusBuds3.rfcommServiceUUIDs == [DeviceRegistry.opoService])
     }
 

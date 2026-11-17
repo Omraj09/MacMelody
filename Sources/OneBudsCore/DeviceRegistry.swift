@@ -511,7 +511,7 @@ public enum DeviceRegistry {
 
     public static let realmeBudsAir8 = DeviceProfile(
         id: "realme-buds-air-8", manufacturer: .realme, model: "Realme Buds Air 8", displayName: "Realme Buds Air 8",
-        bluetoothNames: ["realme Buds Air 8", "realme Buds Air8", "Buds Air 8", "Buds Air8"], transports: [.rfcomm], rfcommServiceUUIDs: [opoService, standardSPP], ble: nil,
+        bluetoothNames: ["realme Buds Air 8", "realme Buds Air8", "Buds Air 8", "Buds Air8"], transports: [.rfcomm], rfcommServiceUUIDs: [standardSPP, opoService], ble: nil,
         protocolKind: .opoV1,
         opo: OPOParameters(productIDs: ["065812", "066812"], noiseModes: realmeLevelModes, equalizerPresets: [EQPresetOption(id: 0, name: "Nature Balance"), EQPresetOption(id: 1, name: "Bass Boost"), EQPresetOption(id: 2, name: "Clear Vocals"), EQPresetOption(id: 3, name: "Clear Bass")],
                            featureStatusIDs: [0x04, 0x05, 0x06, 0x08, 0x09, 0x0C, 0x11, 0x18, 0x1A, 0x1B, 0x1D, 0x26], gameModeFeatureID: 0x06, wearDetectionFeatureID: 0x04,
